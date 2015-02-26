@@ -1,0 +1,254 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="heyheyoheyhey.com.ifoundclassmate3.DayActivity.DayScheduleFragment">
+
+    <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/txtDay"
+        android:layout_alignTop="@+id/section_label"
+        android:layout_toRightOf="@+id/section_label"
+        android:layout_toEndOf="@+id/section_label" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Monday"
+        android:layout_below="@+id/txtDay"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="33dp">
+
+        <RelativeLayout
+            android:id="@+id/MondayRL1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignTop="@+id/Monday"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am05"
+                android:id="@+id/text5am1"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am06"
+                android:id="@+id/text6am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text5am1"
+                android:layout_alignLeft="@+id/text5am1"
+                android:layout_alignStart="@+id/text5am1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am07"
+                android:id="@+id/text7am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text6am1"
+                android:layout_alignLeft="@+id/text6am1"
+                android:layout_alignStart="@+id/text6am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am08"
+                android:id="@+id/text8am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text7am1"
+                android:layout_alignLeft="@+id/text7am1"
+                android:layout_alignStart="@+id/text7am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am09"
+                android:id="@+id/text9am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text8am1"
+                android:layout_alignLeft="@+id/text8am1"
+                android:layout_alignStart="@+id/text8am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am10"
+                android:id="@+id/text10am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text9am1"
+                android:layout_alignLeft="@+id/text9am1"
+                android:layout_alignStart="@+id/text9am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/am11"
+                android:id="@+id/text11am1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text10am1"
+                android:layout_alignLeft="@+id/text10am1"
+                android:layout_alignStart="@+id/text10am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm12"
+                android:id="@+id/text12pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text11am1"
+                android:layout_alignLeft="@+id/text11am1"
+                android:layout_alignStart="@+id/text11am1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm01"
+                android:id="@+id/text1pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text12pm1"
+                android:layout_alignLeft="@+id/text12pm1"
+                android:layout_alignStart="@+id/text12pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm02"
+                android:id="@+id/text2pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text1pm1"
+                android:layout_alignLeft="@+id/text1pm1"
+                android:layout_alignStart="@+id/text1pm1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm03"
+                android:id="@+id/text3pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text2pm1"
+                android:layout_alignLeft="@+id/text2pm1"
+                android:layout_alignStart="@+id/text2pm1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm04"
+                android:id="@+id/text4pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text3pm1"
+                android:layout_alignLeft="@+id/text3pm1"
+                android:layout_alignStart="@+id/text3pm1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm05"
+                android:id="@+id/text5pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text4pm1"
+                android:layout_alignLeft="@+id/text4pm1"
+                android:layout_alignStart="@+id/text4pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm06"
+                android:id="@+id/text6pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text5pm1"
+                android:layout_alignLeft="@+id/text5pm1"
+                android:layout_alignStart="@+id/text5pm1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm07"
+                android:id="@+id/text7pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text6pm1"
+                android:layout_alignLeft="@+id/text6pm1"
+                android:layout_alignStart="@+id/text6pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm08"
+                android:id="@+id/text8pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text7pm1"
+                android:layout_alignLeft="@+id/text7pm1"
+                android:layout_alignStart="@+id/text7pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm09"
+                android:id="@+id/text9pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text8pm1"
+                android:layout_alignLeft="@+id/text8pm1"
+                android:layout_alignStart="@+id/text8pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm10"
+                android:id="@+id/text10pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text9pm1"
+                android:layout_alignLeft="@+id/text9pm1"
+                android:layout_alignStart="@+id/text9pm1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/pm11"
+                android:id="@+id/text11pm1"
+                android:layout_marginTop="@dimen/activity_day_hour_distance"
+                android:layout_alignTop="@+id/text10pm1"
+                android:layout_alignLeft="@+id/text10pm1"
+                android:layout_alignStart="@+id/text10pm1" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

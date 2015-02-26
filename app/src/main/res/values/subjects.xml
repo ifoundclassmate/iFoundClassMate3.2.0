@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="subjects">
+        <item>AFM</item>
+        <item>ACTSC</item>
+        <item>ANTH</item>
+        <item>AHS</item>
+        <item>APPLS</item>
+        <item>AMATH</item>
+        <item>ARCH</item>
+        <item>ARTS</item>
+        <item>ARBUS</item>
+        <item>AVIA</item>
+
+        <item>BASE</item>
+        <item>BIOL</item>
+        <item>BME</item>
+        <item>BUS</item>
+        <item>BET</item>
+
+        <item>CHE</item>
+        <item>CHEM</item>
+        <item>CHINA</item>
+        <item>CMW</item>
+        <item>CIVE</item>
+        <item>CLAS</item>
+        <item>COGSCI</item>
+        <item>CO</item>
+        <item>COMM</item>
+        <item>CS</item>
+        <item>COOP</item>
+        <item>CROAT</item>
+
+        <item>ECON</item>
+        <item>HIST</item>
+    </string-array>
+</resources>

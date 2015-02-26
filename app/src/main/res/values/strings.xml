@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">iFoundClassMate</string>
+    <string name="welcome">Welcome to iFoundClassMate!</string>
+    <string name="enter_name">Please enter your name: </string>
+    <string name="next">Next</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_message">Message</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="schedule_section">My Schedule</string>
+    <string name="group_section">My Groups</string>
+    <string name="fragment_classmate_section_title">My Classmates</string>
+    <string name="new_group_button">New Group</string>
+    <string name="select_group_button">View Group</string>
+    <string name="monday_section">Monday</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="title_activity_welcome">Welcome to iFoundClassMate!</string>
+    <string name="activity_welcome_name_prompt">Please enter\nyour name: </string>
+
+    <!-- User courses -->
+    <string name="fragment_course_section_title">My Courses</string>
+    <string name="fragment_course_add_course_button">Add Course</string>
+
+    <!-- Add courses -->
+    <string name="activity_add_course_choose_subject_prompt">Choose Subject:</string>
+    <string name="activity_add_course_choose_course_prompt">Choose Course:</string>
+    <string name="activity_add_course_choose_section_prompt">Choose Section:</string>
+
+    <!-- Course view -->
+    <string name="activity_course_view_start_time_prompt">Start Time: </string>
+    <string name="activity_course_view_end_time_prompt">End Time: </string>
+
+    <!-- Time strings for schedule -->
+    <string name="am05">5 am</string>
+    <string name="am06">6 am</string>
+    <string name="am07">7 am</string>
+    <string name="am08">8 am</string>
+    <string name="am09">9 am</string>
+    <string name="am10">10 am</string>
+    <string name="am11">11 am</string>
+    <string name="pm12">12 pm</string>
+    <string name="pm01">1 pm</string>
+    <string name="pm02">2 pm</string>
+    <string name="pm03">3 pm</string>
+    <string name="pm04">4 pm</string>
+    <string name="pm05">5 pm</string>
+    <string name="pm06">6 pm</string>
+    <string name="pm07">7 pm</string>
+    <string name="pm08">8 pm</string>
+    <string name="pm09">9 pm</string>
+    <string name="pm10">10 pm</string>
+    <string name="pm11">11 pm</string>
+    <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_activity_day_tab">DayTabActivity</string>
+    <string name="title_activity_day">DayActivity</string>
+    <string name="title_activity_new_group">New Group</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_add_course">Add Course</string>
+    <string name="title_activity_course_view">Course Details</string>
+
+</resources>
