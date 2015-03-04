@@ -3,6 +3,7 @@ package heyheyoheyhey.com.ifoundclassmate3.support;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -58,9 +59,9 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         boolean success = false;
-        if (mTask.equals(ServerUtils.TASK_ADD_COURSE)) {
+        if (mTask.equals(ServerUtils.TASK_ADD_COURSE) || mTask.equals(ServerUtils.TASK_DELETE_COURSE)) {
             if (mUser == null || mCourseItem == null) return false;
-            success = addCourse();
+            success = addOrDeleteCourse();
         } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_COURSES)) {
             if (mUser == null) return false;
             success = retrieveCourses();
@@ -82,23 +83,23 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
-    private boolean addCourse() {
+    private boolean addOrDeleteCourse() {
+
         try {
             Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_COURSE);
             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String toServer = ServerUtils.TASK_ADD_COURSE + "\n" + mUser.getId() + "\n";
+            String toServer = mTask + "\n" + mUser.getId() + "\n";
             toServer += mCourseItem.getId() + "\n" + mCourseItem.getSection() + "\n";
             outToServer.writeBytes(toServer);
             String authResult = inFromServer.readLine();
 
-            // password is incorrect
+            // server-side error
             if (authResult.equals("0")) return false;
 
-                // user already exists or new user
             else if (authResult.equals("1")) {
-                // obtain user id from server
-                System.out.println("Server response OK: adding course");
+                // action completed
+                System.out.println("Server response OK: adding/deleting course");
             }
             clientSocket.close();
         } catch (ConnectException e) {
@@ -178,6 +179,7 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
                 if (!section.equals(currentSection)) continue;
                 System.out.println(section);
 
+
                 JSONObject schedule = res.getJSONArray("classes").getJSONObject(0);
                 System.out.println(schedule.toString());
                 JSONObject dates = schedule.getJSONObject("date");
@@ -246,6 +248,38 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
                 CourseItem courseItem = new CourseItem(subject + " " + course, section, start, end, daysOfWeek, startTimeHours, startTimeMins, endTimeHours, endTimeMins);
                 System.out.println("Course: " + courseItem.getId());
 
+
+                if (!res.isNull("title")) {
+                    String cTitle = (String) res.get("title");
+                    courseItem.setTitle(cTitle);
+                }
+
+                if (!schedule.isNull("location")) {
+                    JSONObject location = schedule.getJSONObject("location");
+                    if (!location.isNull("building") && !location.isNull("room")) {
+                        String cLocation = ((String) location.get("building")) + " " + ((String) location.get("room"));
+                        courseItem.setLocation(cLocation);
+                    }
+                }
+
+                if (!schedule.isNull("instructors")) {
+                    JSONArray instrArr = schedule.getJSONArray("instructors");
+                    String cInstructors = "";
+                    for (int j = 0; j < instrArr.length(); j++) {
+                        if (instrArr.isNull(j)) break;
+                        else {
+                            String[] nameSplit = ((String) instrArr.get(j)).split(",");
+                            cInstructors += nameSplit[0] + ", " + nameSplit[1] + ";";
+                        }
+                    }
+                    courseItem.setInstructors(cInstructors);
+                }
+
+                if (!res.isNull("term")) {
+                    int term = res.getInt("term");
+                    String cTerm = ProjectUtils.termIdToName(term);
+                    courseItem.setTerm(cTerm);
+                }
                 return courseItem;
             }
         } catch (Exception e) {
@@ -254,4 +288,5 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         }
         return null;
     }
+
 }

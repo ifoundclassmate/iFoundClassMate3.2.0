@@ -39,6 +39,8 @@ public class MainActivity extends ActionBarActivity {
     private User user;
     private ProgressBar loader;
 
+    private User savedUser;
+
     private boolean courseReady = false;
 
     @Override
@@ -86,11 +88,11 @@ public class MainActivity extends ActionBarActivity {
                             if (users[i].getName().equals(userToLogin)) {
                                 // start this user...
                                 System.out.println("Starting user " + users[i].getName());
-                                user = new User(users[i], getApplicationContext());
+                                savedUser = new User(users[i], getApplicationContext());
                                 Intent intent = new Intent(this, LoginActivity.class);
-                                intent.putExtra(USER_ID_MESSAGE, user.getId());
-                                intent.putExtra(USER_NAME_MESSAGE, user.getUsername());
-                                intent.putExtra(USER_PASSWORD_MESSAGE, user.getPassword());
+                                intent.putExtra(USER_ID_MESSAGE, savedUser.getId());
+                                intent.putExtra(USER_NAME_MESSAGE, savedUser.getUsername());
+                                intent.putExtra(USER_PASSWORD_MESSAGE, savedUser.getPassword());
                                 intent.putExtra(USER_REMEMBER_ME_MESSAGE, true);
                                 startActivityForResult(intent, 1);
                                 return;
@@ -101,9 +103,7 @@ public class MainActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
 
-                // TODO: just start first user for now...
-                //User user = new User(users[0], getApplicationContext());
-                //startHome(user);
+                // users saved on disk, but not "remember me"-ed...
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.putExtra(USER_ID_MESSAGE, "");
                 intent.putExtra(USER_NAME_MESSAGE, "");
@@ -111,6 +111,7 @@ public class MainActivity extends ActionBarActivity {
                 intent.putExtra(USER_REMEMBER_ME_MESSAGE, true);
                 startActivityForResult(intent, 1);
             } else {
+                // no users saved on disk...
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.putExtra(USER_ID_MESSAGE, "");
                 intent.putExtra(USER_NAME_MESSAGE, "");
@@ -164,7 +165,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (requestCode == 1) {
 
-            //Retrieve data in the intent
+            // Login screen landing: get login details
             String userId = data.getStringExtra(USER_ID_MESSAGE);
             String userName = data.getStringExtra(USER_NAME_MESSAGE);
             String userPassword = data.getStringExtra(USER_PASSWORD_MESSAGE);
@@ -184,32 +185,40 @@ public class MainActivity extends ActionBarActivity {
             }
 
             System.out.println("userId: " + userId + ", userName: " + userName + ", password: " + userPassword);
-            user = new User(userId, userName, userPassword);
-            loader.setProgress(50);
-        // TODO: get server updates here.
-        ServerFunction getCoursesTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_COURSES);
-        getCoursesTask.setUser(user);
-            getCoursesTask.setListener(new ServerFunction.ServerTaskListener() {
-                @Override
-                public void onPostExecuteConcluded(boolean result, Object retVal) {
-                    if (result) {
-                        System.out.println("Server returned courses...");
-                        ArrayList<CourseItem> courseItems = (ArrayList<CourseItem>) retVal;
-                        if (courseItems.isEmpty()) System.out.println("User has no ccourses");
-                        for (CourseItem courseItem : courseItems) {
-                            System.out.println("Populating course for user: " + courseItem.getId());
-                            user.addScheduleItem(courseItem);
-                        }
-                        user.writeToDisk(getApplicationContext());
-                        onReadyStartHome(1);
-                    }
+
+            if (ServerUtils.BYPASS_SERVER) {
+                // Starting from disk: immediately start home screen
+                if (savedUser == null) {
+                    savedUser = new User(userId, userName, userPassword);
                 }
-            });
-        getCoursesTask.execute((Void) null);
-            //user.writeToDisk(getApplicationContext());
-            //startHome(userx);
-        //} else if (requestCode == 2) {
-        //    startHome(user);
+                startHome(savedUser);
+            } else {
+                // not starting from disk... retrieve info from server.
+                // TODO: if a user previously has saved to disk, we should upload that to server...
+                user = new User(userId, userName, userPassword);
+                loader.setProgress(50);
+                // Step 1: get courses from server
+                ServerFunction getCoursesTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_COURSES);
+                getCoursesTask.setUser(user);
+                getCoursesTask.setListener(new ServerFunction.ServerTaskListener() {
+                    @Override
+                    public void onPostExecuteConcluded(boolean result, Object retVal) {
+                        if (result) {
+                            System.out.println("Server returned courses...");
+                            ArrayList<CourseItem> courseItems = (ArrayList<CourseItem>) retVal;
+                            if (courseItems.isEmpty()) System.out.println("User has no ccourses");
+                            for (CourseItem courseItem : courseItems) {
+                                System.out.println("Populating course for user: " + courseItem.getId());
+                                user.addScheduleItem(courseItem);
+                            }
+                            user.writeToDisk(getApplicationContext());
+                            onReadyStartHome(1);
+                        }
+                    }
+                });
+                getCoursesTask.execute((Void) null);
+                // TODO: retrieve friends, groups, etc from server...
+            }
         }
     }
 

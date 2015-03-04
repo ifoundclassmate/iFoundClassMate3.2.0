@@ -5,9 +5,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="heyheyoheyhey.com.ifoundclassmate3.LoginActivity">
+    tools:context="heyheyoheyhey.com.ifoundclassmate3.LoginActivity"
+    android:background="@drawable/tab_border">
 
     <!-- Login progress -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Please enter your credentials:"
+        android:id="@+id/textView11"
+        android:background="@drawable/bg_schedule_date" />
+
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />

@@ -1,7 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="heyheyoheyhey.com.ifoundclassmate3.ClassmateFragment">
+    tools:context="heyheyoheyhey.com.ifoundclassmate3.ClassmateFragment"
+    android:background="@drawable/tab_border">
 
     <!-- TODO: Update blank fragment layout -->
 

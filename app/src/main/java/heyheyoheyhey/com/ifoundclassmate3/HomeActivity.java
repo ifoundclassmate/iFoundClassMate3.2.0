@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerFunction;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
 
@@ -355,6 +357,7 @@ public class HomeActivity extends ActionBarActivity
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         private static final int ADD_COURSE_REQUEST_CODE = 3;
+        private static final int REMOVE_COURSE_REQUEST_CODE = 4;
         private ArrayList<String> listItems;
         private TextViewListAdapter adapter;
         /**
@@ -389,6 +392,7 @@ public class HomeActivity extends ActionBarActivity
             this.adapter = new TextViewListAdapter(getActivity().getApplicationContext(), R.layout.adapter_group_list, listItems);
             this.adapter.setColor(Color.BLUE);
             courses.setAdapter(adapter);
+            courses.setOnItemClickListener(new CourseOnItemClickListener());
 
             // set up button
             Button btnAddCourse = (Button) rootView.findViewById(R.id.btnAddCourse);
@@ -405,18 +409,46 @@ public class HomeActivity extends ActionBarActivity
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == 1) {
-                // new group added: add group id to list
-                CourseItem courseItem = data.getParcelableExtra(COURSE_ITEM);
-                ServerFunction addCourseTask = new ServerFunction(ServerUtils.TASK_ADD_COURSE);
-                addCourseTask.setUser(user);
-                addCourseTask.setCourseItem(courseItem);
-                addCourseTask.execute((Void) null);
-                user.addScheduleItem(courseItem);
-                user.writeToDisk(getActivity().getApplicationContext());
-                listItems.add(courseItem.getId());
-                adapter.notifyDataSetChanged();
+            if (requestCode == ADD_COURSE_REQUEST_CODE) {
+                if (resultCode == 1) {
+                    // new group added: add group id to list
+                    CourseItem courseItem = data.getParcelableExtra(COURSE_ITEM);
+
+                    // update to server
+                    if (!ServerUtils.BYPASS_SERVER) {
+                        ServerFunction addCourseTask = new ServerFunction(ServerUtils.TASK_ADD_COURSE);
+                        addCourseTask.setUser(user);
+                        addCourseTask.setCourseItem(courseItem);
+                        addCourseTask.execute((Void) null);
+                    }
+
+                    // update user locally (on memory/disk)
+                    user.addScheduleItem(courseItem);
+                    user.writeToDisk(getActivity().getApplicationContext());
+                    listItems.add(courseItem.getId());
+                    adapter.notifyDataSetChanged();
+                }
+            } else if (requestCode == REMOVE_COURSE_REQUEST_CODE) {
+                if (resultCode == 1) {
+                    // course to be removed
+                    CourseItem courseItem = data.getParcelableExtra(AddCourseActivity.COURSEITEM_MESSAGE);
+
+                    // update to server
+                    if (!ServerUtils.BYPASS_SERVER) {
+                        ServerFunction deleteCourseTask = new ServerFunction(ServerUtils.TASK_DELETE_COURSE);
+                        deleteCourseTask.setUser(user);
+                        deleteCourseTask.setCourseItem(courseItem);
+                        deleteCourseTask.execute((Void) null);
+                    }
+
+                    // update user locally (on memory/disk)
+                    user.removeScheduleItem(courseItem);
+                    user.writeToDisk(getActivity().getApplicationContext());
+                    listItems.remove(courseItem.getId());
+                    adapter.notifyDataSetChanged();
+                }
             }
+
 
         }
 
@@ -425,6 +457,23 @@ public class HomeActivity extends ActionBarActivity
             super.onAttach(activity);
             ((HomeActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+
+        public class CourseOnItemClickListener implements AdapterView.OnItemClickListener {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // start course view...
+                final boolean deleteCourse = false;
+                Intent intent = new Intent(getActivity(), CourseViewActivity.class);
+                for (ScheduleItem scheduleItem : user.getScheduleItems()) {
+                    if (scheduleItem instanceof CourseItem && ((CourseItem) scheduleItem).getId().equals(parent.getItemAtPosition(position))) {
+                        intent.putExtra(AddCourseActivity.COURSEITEM_MESSAGE, (CourseItem) scheduleItem);
+                        intent.putExtra(AddCourseActivity.COURSE_ACTION_MESSAGE, deleteCourse);
+                        startActivityForResult(intent, REMOVE_COURSE_REQUEST_CODE);
+                    }
+                }
+            }
         }
     }
 

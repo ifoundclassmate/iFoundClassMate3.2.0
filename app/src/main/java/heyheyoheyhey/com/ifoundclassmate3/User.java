@@ -153,6 +153,10 @@ public class User implements Parcelable {
         this.scheduleItems.add(scheduleItem);
     }
 
+    public void removeScheduleItem(ScheduleItem scheduleItem) {
+        this.scheduleItems.remove(scheduleItem);
+    }
+
     public ArrayList<ScheduleItem> getScheduleItems() {
         return this.scheduleItems;
     }

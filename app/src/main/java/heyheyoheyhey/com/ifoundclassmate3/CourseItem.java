@@ -23,6 +23,10 @@ public class CourseItem extends ScheduleItem implements Parcelable {
     private int endHours;
     private int endMins;
     private int length; // in minutes
+    private String location = ""; // building and room
+    private String instructors = ""; // all instructors, separated using ";"
+    private String term = ""; // eg. Winter 2015
+    private String title = "";
 
     private String description;
 
@@ -45,6 +49,10 @@ public class CourseItem extends ScheduleItem implements Parcelable {
         out.writeInt(endHours);
         out.writeInt(endMins);
         out.writeInt(length);
+        out.writeString(location);
+        out.writeString(instructors);
+        out.writeString(term);
+        out.writeString(title);
 
     }
 
@@ -73,6 +81,10 @@ public class CourseItem extends ScheduleItem implements Parcelable {
         endHours = in.readInt();
         endMins = in.readInt();
         this.length = in.readInt();
+        location = in.readString();
+        instructors = in.readString();
+        term = in.readString();
+        title = in.readString();
         updateScheduleTimeArray();
     }
 
@@ -98,6 +110,12 @@ public class CourseItem extends ScheduleItem implements Parcelable {
         endHours = Integer.parseInt(fields[7]);
         endMins = Integer.parseInt(fields[8]);
         length = Integer.parseInt(fields[9]);
+
+        System.out.println(fields[10] + fields[11]);
+        location = fields[10];
+        instructors = fields[11];
+        term = fields[12];
+        title = fields[13];
         /*
         int nextPos = savedString.indexOf(":");
         int startPos = 0;
@@ -145,6 +163,13 @@ public class CourseItem extends ScheduleItem implements Parcelable {
         updateScheduleTimeArray();
     }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    public void setInstructors(String instructors) { this.instructors = instructors; }
+    public void setTerm(String term) { this.term = term; }
+    public void setTitle(String title) { this.title = title; }
+
     public void setDescription(String title, String location, String prof) {
         this.description = title + "\n" + location + "\n" + prof + "\n";
     }
@@ -161,7 +186,7 @@ public class CourseItem extends ScheduleItem implements Parcelable {
                 // NOTE: daysOfWeek indexed at 1
                 ScheduleTime newTime = new ScheduleTime(startHours, startMins, endHours, endMins, length, temp.get(Calendar.DAY_OF_MONTH), temp.get(Calendar.MONTH), temp.get(Calendar.YEAR));
                 newTime.setEventName(this.id);
-                if (this.description != null) newTime.setDescription(this.description);
+                if (this.location != null) newTime.setDescription(this.location);
                 this.scheduleTimeArrayList.add(newTime);
             }
             temp.add(Calendar.DATE, 1);
@@ -186,7 +211,8 @@ public class CourseItem extends ScheduleItem implements Parcelable {
         for (int i = 0; i < this.daysOfWeek.length; i++) {
             retVal += this.daysOfWeek[i] + ",";
         }
-        retVal += ":" + this.startHours + ":" + this.startMins + ":" + this.endHours + ":" + this.endMins + ":" + this.length + "\n";
+        retVal += ":" + this.startHours + ":" + this.startMins + ":" + this.endHours + ":" + this.endMins + ":" + this.length;
+        retVal += ":" + this.location + ":" + this.instructors + ":" + this.term + ":" + this.title + "\n";
         return retVal;
     }
 
@@ -202,4 +228,9 @@ public class CourseItem extends ScheduleItem implements Parcelable {
     public int getStartMins() { return this.startMins; }
     public int getEndHours() { return this.endHours; }
     public int getEndMins() { return this.endMins; }
+    public String getLocation() { return this.location; }
+    public String getTerm() { return this.term; }
+    public String getInstructors() { return this.instructors; }
+    public String getTitle() { return this.title; }
+    public boolean[] getDaysOfWeek() { return this.daysOfWeek; }
 }

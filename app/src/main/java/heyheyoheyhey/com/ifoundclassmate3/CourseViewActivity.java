@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-
+// CourseViewActivity: Generic activity for viewing details of a course.
+// PRE: Intent extras:
+// * AddCourseActivity.COURSEITEM_MESSAGE: CourseItem
+// * AddCourseActivity.COURSE_ACTION_MESSAGE: boolean
 public class CourseViewActivity extends ActionBarActivity {
 
     @Override
@@ -19,7 +22,9 @@ public class CourseViewActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_view);
 
-        final CourseItem courseItem = getIntent().getParcelableExtra(AddCourseActivity.COURSEITEM_MESSAGE);
+        // Get the CourseItem to display
+        Intent intent = getIntent();
+        final CourseItem courseItem = intent.getParcelableExtra(AddCourseActivity.COURSEITEM_MESSAGE);
         TextView tvCourseId = (TextView) findViewById(R.id.tvCourse);
         tvCourseId.setText(courseItem.getId());
 
@@ -28,17 +33,73 @@ public class CourseViewActivity extends ActionBarActivity {
 
         TextView tvStartTime = (TextView) findViewById(R.id.tvStartTime);
         String startTimeMins;
-        if (courseItem.getStartMins() < 10) startTimeMins = "0" + courseItem.getStartMins();
-        else startTimeMins = Integer.toString(courseItem.getStartMins());
-        tvStartTime.setText(Integer.toString(courseItem.getStartHours()) + ":" + startTimeMins);
+        if (courseItem.getStartMins() == -1) {
+            tvStartTime.setText("N/A");
+        } else {
+            if (courseItem.getStartMins() < 10) startTimeMins = "0" + courseItem.getStartMins();
+            else startTimeMins = Integer.toString(courseItem.getStartMins());
+            tvStartTime.setText(Integer.toString(courseItem.getStartHours()) + ":" + startTimeMins);
+        }
 
         TextView tvEndTime = (TextView) findViewById(R.id.tvEndTime);
         String endTimeMins;
-        if (courseItem.getEndMins() < 10) endTimeMins = "0" + courseItem.getEndMins();
-        else endTimeMins = Integer.toString(courseItem.getEndMins());
-        tvEndTime.setText(Integer.toString(courseItem.getEndHours()) + ":" + endTimeMins);
+        if (courseItem.getEndMins() == -1) {
+            tvEndTime.setText("N/A");
+        } else {
+            if (courseItem.getEndMins() < 10) endTimeMins = "0" + courseItem.getEndMins();
+            else endTimeMins = Integer.toString(courseItem.getEndMins());
+            tvEndTime.setText(Integer.toString(courseItem.getEndHours()) + ":" + endTimeMins);
+        }
 
+        // Location display text
+        TextView tvLocation = (TextView) findViewById(R.id.tvLocation);
+        if (courseItem.getLocation().isEmpty()) tvLocation.setVisibility(View.INVISIBLE);
+        else tvLocation.setText(courseItem.getLocation());
+
+        // Set instructors TextView display text.
+        // Note, instructors separated by ";" in CourseItem, need to change separator to newline.
+        TextView tvInstructors = (TextView) findViewById(R.id.tvInstructors);
+        if (courseItem.getInstructors().isEmpty()) tvInstructors.setVisibility(View.INVISIBLE);
+        else {
+            String[] instructors = courseItem.getInstructors().split(";");
+            String instructorsText = "";
+            for (int i = 0; i < instructors.length; i++) {
+                instructorsText += instructors[i] + "\n";
+            }
+            tvInstructors.setText(instructorsText);
+        }
+
+        TextView tvTerm = (TextView) findViewById(R.id.tvTerm);
+        if (courseItem.getTerm().isEmpty()) tvTerm.setVisibility(View.INVISIBLE);
+        else tvTerm.setText(courseItem.getTerm());
+
+        TextView tvTitle = (TextView) findViewById(R.id.tvDescription);
+        if (courseItem.getTitle().isEmpty()) tvTitle.setVisibility(View.INVISIBLE);
+        else tvTitle.setText(courseItem.getTitle());
+
+        TextView tvDaysOfWeek = (TextView) findViewById(R.id.tvDaysOfWeek);
+        String daysOfWeekText = "";
+        boolean[] daysOfWeek = courseItem.getDaysOfWeek();
+        int numDays = 0;
+        for (int i = 0; i < daysOfWeek.length; i++) {
+            if (daysOfWeek[i]) numDays ++;
+        }
+        final String[] daysOfWeekString = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        for (int i = 0; i < daysOfWeek.length; i++) {
+            if (daysOfWeek[i]) {
+                daysOfWeekText += daysOfWeekString[i];
+                numDays --;
+                if (numDays > 1) daysOfWeekText += ", ";
+                else if (numDays == 1) daysOfWeekText += " and ";
+            }
+        }
+        tvDaysOfWeek.setText(daysOfWeekText);
+
+        // Action Button text should reflect whether the user is adding or removing course.
+        boolean addOrRemove = intent.getBooleanExtra(AddCourseActivity.COURSE_ACTION_MESSAGE, true);
         Button btnAdd = (Button) findViewById(R.id.btnAddOrRemove);
+        if (addOrRemove) btnAdd.setText("Add to My Courses");
+        else btnAdd.setText("Remove from My Courses");
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

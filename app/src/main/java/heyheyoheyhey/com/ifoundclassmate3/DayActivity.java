@@ -1,10 +1,13 @@
 package heyheyoheyhey.com.ifoundclassmate3;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.astuetz.PagerSlidingTabStrip;
+
 import org.w3c.dom.Text;
 
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
@@ -31,6 +36,7 @@ public class DayActivity extends ActionBarActivity {
     private static int month;
     private static int year;
     protected static User user;
+    protected static final int DEFAULT_PAGE_INDEX = 10;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -57,10 +63,16 @@ public class DayActivity extends ActionBarActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(DEFAULT_PAGE_INDEX);
 
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setViewPager(mViewPager);
+        tabs.setScrollOffset(50);
 
         Intent intent = getIntent();
         day = intent.getIntExtra(HomeActivity.CalendarFragment.SCHEDULE_DAY, 0);
@@ -138,6 +150,7 @@ public class DayActivity extends ActionBarActivity {
                 break;
         }
         date = monthString + " " + day + ", " + year;
+
         return date;
     }
 
@@ -145,7 +158,7 @@ public class DayActivity extends ActionBarActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -155,29 +168,31 @@ public class DayActivity extends ActionBarActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            //return new DayScheduleFragment(getDateString());
 
-            return DayScheduleFragment.newInstance(position + 1, getDateString());
+            int sectionNumber = position - DEFAULT_PAGE_INDEX + 1;
+            return DayScheduleFragment.newInstance(sectionNumber);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 20;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            calendar.set(Calendar.MONTH, month);
+            int sectionNumber = position - DEFAULT_PAGE_INDEX + 1;
+            if (sectionNumber != 1) calendar.add(Calendar.DATE, sectionNumber - 1);
+            String cMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+            int mDay = calendar.get(Calendar.DATE);
+            return (cMonth + " " + mDay).toUpperCase(l);
+            //return null;
         }
     }
 
@@ -190,24 +205,88 @@ public class DayActivity extends ActionBarActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-        private static final String ARG_DATE = "DATE";
         private static String test;
+        private static String cDayOfWeek;
+        private static String cMonth;
+        private static int mDay, mMonth, mYear;
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static DayScheduleFragment newInstance(int sectionNumber, String date) {
+        /*public DayScheduleFragment(int sectionNumber) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            if (sectionNumber != 1) calendar.add(Calendar.DATE, sectionNumber - 1);
+            cDayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.CANADA);
+            cMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.CANADA);
+            cDate = calendar.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.CANADA);
+            cYear = calendar.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.CANADA);
+            test = cDayOfWeek + " " + cMonth + " " + cDate + ", " + cYear;
+            mDay = calendar.get(Calendar.DATE);
+            mYear = calendar.get(Calendar.YEAR);
+            mMonth = calendar.get(Calendar.MONTH);
+        }*/
+        public static DayScheduleFragment newInstance(int sectionNumber) {
             DayScheduleFragment fragment = new DayScheduleFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putString(ARG_DATE, date);
             fragment.setArguments(args);
-            test = date;
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            calendar.set(Calendar.MONTH, month);
+            if (sectionNumber != 1) calendar.add(Calendar.DATE, sectionNumber - 1);
+            cDayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+            cMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+            mDay = calendar.get(Calendar.DATE);
+            mYear = calendar.get(Calendar.YEAR);
+            mMonth = calendar.get(Calendar.MONTH);
+            test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
             return fragment;
         }
 
         public DayScheduleFragment() {
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                int sectionNumber = bundle.getInt(ARG_SECTION_NUMBER, -1);
+                if (sectionNumber != -1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    calendar.set(Calendar.MONTH, month);
+                    if (sectionNumber != 1) calendar.add(Calendar.DATE, sectionNumber - 1);
+                    cDayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                    cMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                    mDay = calendar.get(Calendar.DATE);
+                    mYear = calendar.get(Calendar.YEAR);
+                    mMonth = calendar.get(Calendar.MONTH);
+                    test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
+                }
+            }
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Bundle bundle = getArguments();
+            if (bundle != null) {
+                int sectionNumber = bundle.getInt(ARG_SECTION_NUMBER, -1);
+                if (sectionNumber != -1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    calendar.set(Calendar.MONTH, month);
+                    if (sectionNumber != 1) calendar.add(Calendar.DATE, sectionNumber - 1);
+                    cDayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+                    cMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                    mDay = calendar.get(Calendar.DATE);
+                    mYear = calendar.get(Calendar.YEAR);
+                    mMonth = calendar.get(Calendar.MONTH);
+                    test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
+                }
+            }
         }
 
         @Override
@@ -219,7 +298,7 @@ public class DayActivity extends ActionBarActivity {
             dayText.setText(test);
             ArrayList<ScheduleItem.ScheduleTime> scheduleTimes = new ArrayList<>();
             for (ScheduleItem scheduleItem : user.getScheduleItems()) {
-                scheduleTimes.addAll(scheduleItem.getScheduleForDay(day, month, year));
+                scheduleTimes.addAll(scheduleItem.getScheduleForDay(mDay, mMonth, mYear));
             }
             Collections.sort(scheduleTimes);
             RelativeLayout relativeLayout = (RelativeLayout) rootView.findViewById(R.id.MondayRL1);
@@ -235,7 +314,8 @@ public class DayActivity extends ActionBarActivity {
                 TextView currentScheduleView = render(scheduleTime);
                 currentScheduleView.setId(currentScheduleView.getId() + test);
                 currentScheduleView.setWidth(400);
-                currentScheduleView.setBackgroundResource(R.color.light_blue);
+                currentScheduleView.setBackgroundResource(R.drawable.schedule_course_block_red);
+                currentScheduleView.setTextColor(Color.BLACK);
                 currentScheduleView.setHeight(scheduleTime.length * WIDTH_BETWEEN_HOURS / 60);
                 //LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 int scale = scheduleTime.startMins;
@@ -261,7 +341,7 @@ public class DayActivity extends ActionBarActivity {
             TextView retVal = new TextView(getActivity().getApplicationContext());
             String textViewText = "";
             if (scheduleTime.eventName != null) textViewText += scheduleTime.eventName + "\n";
-            if (scheduleTime.description != null) textViewText += scheduleTime.description;
+            if (scheduleTime.description != null) textViewText += scheduleTime.description + "\n";
             int startTimeHours = scheduleTime.startHours;
             String startTimeMins;
             if (scheduleTime.startMins < 10) startTimeMins = "0" + Integer.toString(scheduleTime.startMins);

@@ -11,9 +11,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -25,10 +27,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
+
 
 public class AddCourseActivity extends ActionBarActivity  {
 
     public final static String COURSEITEM_MESSAGE = "COURSEITEM_MESSAGE";
+    public final static String COURSE_ACTION_MESSAGE = "COURSE_ACTION_MESSAGE";
 
     protected String mCurrentSubject;
     protected String mCurrentCourse;
@@ -37,6 +42,7 @@ public class AddCourseActivity extends ActionBarActivity  {
     protected ArrayList<String> sectionListItems = new ArrayList<>();
     protected TextViewListAdapter sectionAdapter;
     protected ArrayList<CourseItem> courseItems;
+    protected ProgressBar loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,9 @@ public class AddCourseActivity extends ActionBarActivity  {
         sections.setAdapter(sectionAdapter);
         sections.setOnItemClickListener(new SectionOnItemClickListener());
 
+        loader = (ProgressBar) findViewById(R.id.addCourseProgressBar);
+        loader.setVisibility(View.INVISIBLE);
+
     }
 
     protected void setViewsEnabled(boolean enable) {
@@ -77,6 +86,8 @@ public class AddCourseActivity extends ActionBarActivity  {
         spinner.setEnabled(enable);
         courses.setEnabled(enable);
         sections.setEnabled(enable);
+        if (enable) loader.setVisibility(View.INVISIBLE);
+        else loader.setVisibility(View.VISIBLE);
     }
 
     protected void showMessage(String message) {
@@ -327,6 +338,39 @@ public class AddCourseActivity extends ActionBarActivity  {
                         }
                         CourseItem courseItem = new CourseItem(mSubject + " " + mCatalogue, section, start, end, daysOfWeek, startTimeHours, startTimeMins, endTimeHours, endTimeMins);
                         System.out.println("Course: " + courseItem.getId());
+
+                        if (!res.isNull("title")) {
+                            String cTitle = (String) res.get("title");
+                            courseItem.setTitle(cTitle);
+                        }
+
+                        if (!schedule.isNull("location")) {
+                            JSONObject location = schedule.getJSONObject("location");
+                            if (!location.isNull("building") && !location.isNull("room")) {
+                                String cLocation = ((String) location.get("building")) + " " + ((String) location.get("room"));
+                                courseItem.setLocation(cLocation);
+                            }
+                        }
+
+                        if (!schedule.isNull("instructors")) {
+                            JSONArray instrArr = schedule.getJSONArray("instructors");
+                            String cInstructors = "";
+                            for (int j = 0; j < instrArr.length(); j++) {
+                                if (instrArr.isNull(j)) break;
+                                else {
+                                    String[] nameSplit = ((String) instrArr.get(j)).split(",");
+                                    cInstructors += nameSplit[0] + ", " + nameSplit[1] + ";";
+                                    System.out.println("oheyhey;".split(";").length);
+                                }
+                            }
+                            courseItem.setInstructors(cInstructors);
+                        }
+
+                        if (!res.isNull("term")) {
+                            int term = res.getInt("term");
+                            String cTerm = ProjectUtils.termIdToName(term);
+                            courseItem.setTerm(cTerm);
+                        }
                         courseItems.add(courseItem);
                     }
                 } catch (Exception e) {
@@ -363,9 +407,12 @@ public class AddCourseActivity extends ActionBarActivity  {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // assume that # courseItems = # of sectionListItems
+            // start course view...
+            // Note: assume that # of courseItems = # of sectionListItems.
+            final boolean addCourse = true;
             Intent intent = new Intent(getApplicationContext(), CourseViewActivity.class);
             intent.putExtra(COURSEITEM_MESSAGE, courseItems.get(position));
+            intent.putExtra(COURSE_ACTION_MESSAGE, addCourse);
             startActivityForResult(intent, 1);
         }
 

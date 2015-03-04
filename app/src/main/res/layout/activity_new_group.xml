@@ -4,7 +4,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="heyheyoheyhey.com.ifoundclassmate3.NewGroupActivity">
+    tools:context="heyheyoheyhey.com.ifoundclassmate3.NewGroupActivity"
+    android:background="@drawable/tab_border">
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +46,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/btnCreate"
-        android:layout_toStartOf="@+id/btnCreate" />
+        android:layout_toStartOf="@+id/btnCreate"
+        android:inputType="textEmailSubject" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -55,7 +57,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:inputType="textEmailSubject" />
 
     <TextView
         android:layout_width="wrap_content"

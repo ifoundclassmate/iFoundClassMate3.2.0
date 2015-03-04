@@ -59,7 +59,7 @@
     <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="title_section1">Section 1</string>
     <string name="title_activity_day_tab">DayTabActivity</string>
-    <string name="title_activity_day">DayActivity</string>
+    <string name="title_activity_day">Daily Schedule</string>
     <string name="title_activity_new_group">New Group</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_add_course">Add Course</string>

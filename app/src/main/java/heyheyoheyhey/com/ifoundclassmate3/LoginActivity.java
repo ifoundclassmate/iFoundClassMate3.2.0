@@ -6,15 +6,18 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -40,13 +43,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
+import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
+
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<Cursor> {
 
-    private final static boolean BYPASS_SERVER_FLAG = false;
 
     private final static String TEMP_IP = "99.236.119.157";
     private final static int TEMP_PORT = 3455;
@@ -54,6 +59,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private LoadFromDiskSetting mLoadFromDisk = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -105,6 +111,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
 
         mRememberMeCheckBox = (CheckBox) findViewById(R.id.check_remember_me);
 
+        mLoadFromDisk = new LoadFromDiskSetting(this);
     }
 
     private void populateAutoComplete() {
@@ -281,6 +288,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent i = new Intent(getApplicationContext(), LoginSettingsActivity.class);
+            startActivity(i);
             return true;
         }
 
@@ -304,8 +313,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            if (BYPASS_SERVER_FLAG) {
+            System.out.println(ServerUtils.BYPASS_SERVER);
+            if (ServerUtils.BYPASS_SERVER) {
                 mId = "100";
                 return true;
             }
@@ -367,6 +376,34 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+
+    public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+        private boolean loadFromDisk;
+
+        public LoadFromDiskSetting(Context context) {
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+            // register preference change listener
+            prefs.registerOnSharedPreferenceChangeListener(this);
+
+            // and set remembered preferences
+            loadFromDisk = prefs.getBoolean("load_from_disk", false);
+            ServerUtils.BYPASS_SERVER = loadFromDisk;
+        }
+
+        // handle updates to preferences
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            if (key.equals("load_from_disk")) {
+                loadFromDisk = prefs.getBoolean("load_from_disk", false);
+                System.out.println("Change load from disk setting to: " + loadFromDisk);
+                ServerUtils.BYPASS_SERVER = loadFromDisk;
+            }
+            // etc
+        }
+    }
+
 }
 
 

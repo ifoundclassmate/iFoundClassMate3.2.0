@@ -36,12 +36,6 @@
             android:label="@string/title_activity_home" >
         </activity>
         <activity
-            android:name=".WelcomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_welcome"
-            android:theme="@style/FullscreenTheme" >
-        </activity>
-        <activity
             android:name=".DayActivity"
             android:label="@string/title_activity_day" >
         </activity>
@@ -66,6 +60,10 @@
         <activity
             android:name=".CourseViewActivity"
             android:label="@string/title_activity_course_view" >
+        </activity>
+        <activity
+            android:name=".LoginSettingsActivity"
+            android:label="@string/title_activity_login_settings" >
         </activity>
     </application>
 
