@@ -2,10 +2,10 @@
 
     <item android:top="3dp" android:left="3dp" android:right="3dp" android:bottom="3dp">
         <shape android:shape="rectangle" >
-            <solid android:color="#ffffff" />
+            <solid android:color="#E5E4E2" />
 
-            <stroke android:width="1dip" android:color="#ff2a57d5"/>
-            <stroke android:width="2dip" android:color="#ff4778d5"/>
+            <stroke android:width="1dip" android:color="#E5E4E2"/>
+            <stroke android:width="2dip" android:color="#E5E4E2"/>
 
             <corners android:radius="15dip"/>
             <padding android:left="5dip" android:top="5dip" android:right="5dip" android:bottom="5dip" />
