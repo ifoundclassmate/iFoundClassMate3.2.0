@@ -74,28 +74,33 @@ public class registerActivity extends ActionBarActivity {
         boolean allCorrect = true;
 
         if(!confirmPassword.equals(password)){
-            mPasswordView.setError("password doesn't match the confirmed password");
+            mConfirmedPasswordView.setError("password doesn't match the confirmed password");
             allCorrect = false;
+            mConfirmedPasswordView.requestFocus();
         }
 
         if(email.equals("")){
             mEmailView.setError("email cannot be empty");
             allCorrect = false;
+            mEmailView.requestFocus();
+
         }
 
         if(password.equals("")){
-            mEmailView.setError("password cannot be empty");
+            mPasswordView.setError("password cannot be empty");
             allCorrect = false;
+            mPasswordView.requestFocus();
         }
 
         if(username.equals("")){
             mUsernameView.setError("username cannot be empty");
             allCorrect = false;
+            mUsernameView.requestFocus();
         }
 
         //contact server
         if(!allCorrect){
-            mUsernameView.requestFocus();
+
         }else{
             mAuthTask = new UserRegisterTask(username,email, password);
             mAuthTask.execute((Void) null);
