@@ -119,7 +119,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 Intent i2=new Intent(LoginActivity.this, registerActivity.class);
-                startActivityForResult(i2, 2);
+                startActivityForResult(i2,1);
 
             }
         });
