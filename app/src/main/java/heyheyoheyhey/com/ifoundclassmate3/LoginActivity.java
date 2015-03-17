@@ -119,7 +119,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 Intent i2=new Intent(LoginActivity.this, registerActivity.class);
-                startActivityForResult(i2, 1);
+                startActivityForResult(i2, 2);
 
             }
         });
@@ -449,10 +449,16 @@ public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreference
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == 2){
+            return;
+        }
+
         if (resultCode != 1) {
             finish();
             return;
         }
+
 
         if (requestCode == 1) {
             System.out.println("accepting information from register class");

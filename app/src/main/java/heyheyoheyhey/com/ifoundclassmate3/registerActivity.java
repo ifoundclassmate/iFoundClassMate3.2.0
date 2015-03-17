@@ -62,6 +62,13 @@ public class registerActivity extends ActionBarActivity {
             }
         });
 
+        Button cancelButton = (Button) findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(2);
+                finish();
+            }});
     }
 
     private void attemptRegister(){
