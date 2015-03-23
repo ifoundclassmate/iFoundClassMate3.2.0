@@ -81,6 +81,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="heyheyoheyhey.com.ifoundclassmate3.GroupListActivity" />
         </activity>
+        <activity
+            android:name=".CreateMeetingActivity"
+            android:label="@string/title_activity_create_meeting" >
+        </activity>
     </application>
 
 </manifest>

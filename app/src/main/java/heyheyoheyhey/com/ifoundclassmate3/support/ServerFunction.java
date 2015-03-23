@@ -1,6 +1,5 @@
 package heyheyoheyhey.com.ifoundclassmate3.support;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
@@ -20,7 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import heyheyoheyhey.com.ifoundclassmate3.CourseItem;
-import heyheyoheyhey.com.ifoundclassmate3.MainActivity;
+import heyheyoheyhey.com.ifoundclassmate3.Group;
+import heyheyoheyhey.com.ifoundclassmate3.ScheduleItem;
 import heyheyoheyhey.com.ifoundclassmate3.User;
 
 /**
@@ -37,10 +37,13 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
     private CourseItem mCourseItem;
     private ServerTaskListener mTaskListener;
     private String mFriendToAdd;
+    private Group mGroup;
 
+    private ArrayList<ScheduleItem> retScheduleItems;
     private ArrayList<CourseItem> retCourseItems;
     private ArrayList<String> retFriends;
     private ArrayList<String> retUsers;
+    private ArrayList<Group> retGroups;
 
     public ServerFunction(String task) {
         mTask = task;
@@ -60,6 +63,9 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
 
     public void setFriendToAdd(String friendToAdd) { mFriendToAdd = friendToAdd; }
 
+    public void setGroup(Group group) { mGroup = group; }
+
+
     @Override
     protected Boolean doInBackground(Void... params) {
         boolean success = false;
@@ -78,6 +84,18 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_USERS_ENROLLED_IN_COURSE)) {
             if (mCourseItem == null) return false;
             success = retrieveRegisteredUsers();
+        } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_FRIEND_COURSES)) {// retrieve group schedule?
+            if (mGroup == null) return false;
+            success = retrieveGroupCourses();
+        } else if (mTask.equals(ServerUtils.TASK_CREATE_GROUP)) {
+            if (mGroup == null) return false;
+            success = createGroup();
+        } else if (mTask.equals(ServerUtils.TASK_ADD_USER_TO_GROUP)) {
+            if (mFriendToAdd == null || mGroup == null) return false;
+            success = addUserToGroup();
+        } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_GROUPS)) {
+            if (mUser == null) return false;
+            success = getGroups();
         }
         return success;
 
@@ -98,6 +116,10 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
             } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_USERS_ENROLLED_IN_COURSE)) {
                 if (mTaskListener != null) {
                     mTaskListener.onPostExecuteConcluded(success, retUsers);
+                }
+            } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_FRIEND_COURSES)) {
+                if (mTaskListener != null) {
+                    mTaskListener.onPostExecuteConcluded(success, retScheduleItems);
                 }
             }
 
@@ -414,4 +436,142 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         return true;
     }
 
+    // TODO: finish
+    private boolean retrieveGroupCourses() {
+        retScheduleItems = new ArrayList<>();
+        try {
+            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_GROUP);
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String toServer = ServerUtils.TASK_RETRIEVE_FRIEND_COURSES + "\n" + mGroup.getId() + "\n";
+            outToServer.writeBytes(toServer);
+            String authResult = inFromServer.readLine();
+
+            // password is incorrect
+            if (authResult.equals("0")) return false;
+
+                // user already exists or new user
+            else if (authResult.equals("1")) {
+                // obtain user id from server
+                System.out.println("Server response OK: getting group members' courses...");
+                int numCourses = Integer.parseInt(inFromServer.readLine());
+                for (int i = 0; i < numCourses; i++) {
+                    String subject = inFromServer.readLine();
+                    String course = inFromServer.readLine();
+                    String section = inFromServer.readLine();
+                    // retrieve from waterloo api course details.
+                    CourseItem toAdd = getWaterlooCourse(subject, course, section);
+                    if (toAdd != null) {
+                        retScheduleItems.add(toAdd);
+                    } else return false;
+                }
+            }
+            clientSocket.close();
+        } catch (ConnectException e) {
+            System.out.println("Not found server...");
+
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean createGroup() {
+        try {
+            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_GROUP);
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String toServer = mTask + "\n" + mGroup.getId() + "\n" + mGroup.getDescription() + "\n";
+            outToServer.writeBytes(toServer);
+            String authResult = inFromServer.readLine();
+
+            // server-side error
+            if (authResult.equals("0")) return false;
+
+            else if (authResult.equals("1")) {
+                // action completed
+                System.out.println("Server response OK: creating group");
+            }
+            clientSocket.close();
+        } catch (ConnectException e) {
+            System.out.println("Not found server...");
+
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean addUserToGroup() {
+        try {
+            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_GROUP);
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String toServer = mTask + "\n" + mGroup.getId() + "\n" + mFriendToAdd + "\n";
+            outToServer.writeBytes(toServer);
+            String authResult = inFromServer.readLine();
+
+            // server-side error
+            if (authResult.equals("0")) return false;
+
+            else if (authResult.equals("1")) {
+                // action completed
+                System.out.println("Server response OK: adding user to group");
+            }
+            clientSocket.close();
+        } catch (ConnectException e) {
+            System.out.println("Not found server...");
+
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean getGroups() {
+        retGroups = new ArrayList<>();
+        try {
+            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_GROUP);
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String toServer = ServerUtils.TASK_RETRIEVE_GROUPS + "\n" + mUser.getUsername() + "\n";
+            outToServer.writeBytes(toServer);
+            String authResult = inFromServer.readLine();
+
+            // password is incorrect
+            if (authResult.equals("0")) return false;
+
+                // user already exists or new user
+            else if (authResult.equals("1")) {
+                // obtain user id from server
+                System.out.println("Server response OK: getting groups...");
+                int numGroups = Integer.parseInt(inFromServer.readLine());
+                for (int i = 0; i < numGroups; i++) {
+                    String name = inFromServer.readLine();
+                    String description = inFromServer.readLine();
+                    // retrieve from waterloo api course details.
+                    Group group = new Group(name, description);
+                    if (group != null) {
+                        retGroups.add(group);
+                    } else return false;
+                }
+            }
+            clientSocket.close();
+        } catch (ConnectException e) {
+            System.out.println("Not found server...");
+
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
 }

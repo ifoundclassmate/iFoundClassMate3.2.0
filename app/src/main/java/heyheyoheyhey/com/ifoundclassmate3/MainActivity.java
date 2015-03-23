@@ -38,11 +38,13 @@ public class MainActivity extends ActionBarActivity {
 
     private User user;
     private ProgressBar loader;
+    private int loaderProgress = 0;
 
     private User savedUser;
 
     private boolean courseReady = false;
     private boolean friendReady = false;
+    private boolean groupReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +199,8 @@ public class MainActivity extends ActionBarActivity {
                 // not starting from disk... retrieve info from server.
                 // TODO: if a user previously has saved to disk, we should upload that to server...
                 user = new User(userId, userName, userPassword);
-                loader.setProgress(50);
+                loaderProgress += 22;
+                loader.setProgress(loaderProgress);
                 // Step 1: get courses from server
                 ServerFunction getCoursesTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_COURSES);
                 getCoursesTask.setUser(user);
@@ -239,7 +242,28 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
                 getFriendsTask.execute((Void) null);
-                // TODO: retrieve groups, etc from server...
+
+                // Step 3: get groups from server
+                ServerFunction getGroupsTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_GROUPS);
+                getGroupsTask.setUser(user);
+                getGroupsTask.setListener(new ServerFunction.ServerTaskListener() {
+                    @Override
+                    public void onPostExecuteConcluded(boolean result, Object retVal) {
+                        if (result) {
+                            System.out.println("Server returned groups...");
+                            ArrayList<Group> groups = (ArrayList<Group>) retVal;
+                            if (groups.isEmpty()) System.out.println("User has no groups");
+                            for (Group group : groups) {
+                                System.out.println("Populating friend for user: " + group.getId());
+                                user.addToGroup(group);
+                            }
+                            //user.writeToDisk(getApplicationContext());
+                            onReadyStartHome(3);
+                        }
+                    }
+                });
+                getGroupsTask.execute((Void) null);
+
             }
         }
     }
@@ -249,15 +273,23 @@ public class MainActivity extends ActionBarActivity {
             case 1:
                 // course ready
                 courseReady = true;
-                loader.setProgress(70);
+                loaderProgress += 26;
+                loader.setProgress(loaderProgress);
                 break;
             case 2:
                 // friend ready
                 friendReady = true;
-                loader.setProgress(80);
+                loaderProgress += 22;
+                loader.setProgress(loaderProgress);
+                break;
+            case 3:
+                // groups ready
+                groupReady = true;
+                loaderProgress += 22;
+                loader.setProgress(loaderProgress);
                 break;
         }
-        if (courseReady && friendReady) startHome(user);
+        if (courseReady && friendReady && groupReady) startHome(user);
     }
 
     @Override
