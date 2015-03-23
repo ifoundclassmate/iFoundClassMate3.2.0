@@ -42,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
     private User savedUser;
 
     private boolean courseReady = false;
+    private boolean friendReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,7 +218,28 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
                 getCoursesTask.execute((Void) null);
-                // TODO: retrieve friends, groups, etc from server...
+
+                // Step 2: get friends from server
+                ServerFunction getFriendsTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_FRIENDS);
+                getFriendsTask.setUser(user);
+                getFriendsTask.setListener(new ServerFunction.ServerTaskListener() {
+                    @Override
+                    public void onPostExecuteConcluded(boolean result, Object retVal) {
+                        if (result) {
+                            System.out.println("Server returned friends...");
+                            ArrayList<String> friends = (ArrayList<String>) retVal;
+                            if (friends.isEmpty()) System.out.println("User has no friends");
+                            for (String friend : friends) {
+                                System.out.println("Populating friend for user: " + friend);
+                                user.addFriend(friend);
+                            }
+                            //user.writeToDisk(getApplicationContext());
+                            onReadyStartHome(2);
+                        }
+                    }
+                });
+                getFriendsTask.execute((Void) null);
+                // TODO: retrieve groups, etc from server...
             }
         }
     }
@@ -227,10 +249,15 @@ public class MainActivity extends ActionBarActivity {
             case 1:
                 // course ready
                 courseReady = true;
+                loader.setProgress(70);
                 break;
-
+            case 2:
+                // friend ready
+                friendReady = true;
+                loader.setProgress(80);
+                break;
         }
-        if (courseReady) startHome(user);
+        if (courseReady && friendReady) startHome(user);
     }
 
     @Override
