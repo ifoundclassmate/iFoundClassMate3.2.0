@@ -213,6 +213,8 @@ public class HomeActivity extends ActionBarActivity
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public static final String NEW_GROUP = "NEW_GROUP";
+
+        public static final String VIEW_GROUP = "VIEW_GROUP";
         private View myView;
         private ArrayList<String> listItems;
         TextViewListAdapter adapter;
@@ -242,23 +244,10 @@ public class HomeActivity extends ActionBarActivity
             this.adapter = new TextViewListAdapter(getActivity().getApplicationContext(), R.layout.adapter_group_list, listItems);
             final ListView listView = (ListView) rootView.findViewById(R.id.grpListView);
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new GroupOnItemClickListener());
 
-            // TODO: load user groups from server
-
-            // load groups
-            Button btnViewGroup = (Button) rootView.findViewById(R.id.btnSelectGroup);
+            // add button handler
             Button btnNewGroup = (Button) rootView.findViewById(R.id.btnNewGroup);
-
-            btnViewGroup.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    // TODO: go to view group activity...
-                    TextView selectedGroupView = (TextView) listView.getSelectedView();
-                    String groupId = selectedGroupView.getText().toString();
-
-                    Intent intent = new Intent(getActivity(), DayActivity.class);
-                    startActivity(intent);
-                }
-            });
 
             btnNewGroup.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -278,13 +267,10 @@ public class HomeActivity extends ActionBarActivity
         private void updateView() {
             // disables button/listview if no groups found
             final ListView listView = (ListView) myView.findViewById(R.id.grpListView);
-            Button btnViewGroup = (Button) myView.findViewById(R.id.btnSelectGroup);
             ArrayList<Group> groups = user.getGroups();
             if (groups.isEmpty()) {
-                btnViewGroup.setEnabled(false);
                 listView.setEnabled(false);
             } else {
-                btnViewGroup.setEnabled(true);
                 listView.setEnabled(true);
             }
         }
@@ -295,6 +281,10 @@ public class HomeActivity extends ActionBarActivity
             if (resultCode == 1) {
                 // new group added: add group id to list
                 Group newGroup = data.getParcelableExtra(NEW_GROUP);
+
+                // TODO: this might change
+                newGroup.addUser(user.getUsername());
+
                 user.addToGroup(newGroup);
                 listItems.add(newGroup.getId());
                 adapter.notifyDataSetChanged();
@@ -309,6 +299,22 @@ public class HomeActivity extends ActionBarActivity
             ((HomeActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+        public class GroupOnItemClickListener implements AdapterView.OnItemClickListener {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: go to view group activity...
+                String groupId = (String) parent.getItemAtPosition(position);
+                for (Group group : user.getGroups()) {
+                    if (groupId.equals(group.getId())) {
+                        Intent intent = new Intent(getActivity(), GroupViewActivity.class);
+                        intent.putExtra(VIEW_GROUP, group);
+                        startActivity(intent);
+                    }
+                }
+            }
+        }
     }
 
     // classmate
@@ -318,6 +324,10 @@ public class HomeActivity extends ActionBarActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private View myView;
+        private ArrayList<String> listItems;
+        TextViewListAdapter adapter;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -338,6 +348,23 @@ public class HomeActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_classmate, container, false);
+
+            // TODO: for now, just populate the listView with friend names, in the future
+            // friends should be tied to a course.
+            this.listItems = new ArrayList<>();
+            for (String friend : user.getFriends()) listItems.add(friend);
+            this.adapter = new TextViewListAdapter(getActivity().getApplicationContext(), R.layout.adapter_group_list, listItems);
+            final ListView listView = (ListView) rootView.findViewById(R.id.classmateListView);
+            listView.setAdapter(adapter);
+
+            Button btnFindClassmate = (Button) rootView.findViewById(R.id.btnFindClassmate);
+
+            btnFindClassmate.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    // TODO: open find classmate dialog box
+                }
+            });
+
             return rootView;
         }
 
