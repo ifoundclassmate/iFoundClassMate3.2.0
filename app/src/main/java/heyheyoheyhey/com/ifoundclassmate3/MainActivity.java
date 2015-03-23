@@ -32,6 +32,10 @@ public class MainActivity extends ActionBarActivity {
     // for home activity
     public final static String USER_MESSAGE = "USER_MESSAGE";
 
+    public final static String SHOULD_GO_HOME_DIRECTLY = "FALSE";
+
+
+
     // metadata constants
     private final static String METADATA_FILE = "metadata.info";
     private final static String AUTO_LOGIN = "AUTO_LOGIN";
@@ -46,11 +50,15 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loader = (ProgressBar) findViewById(R.id.mainProgressBar);
         loader.setMax(100);
         loader.setProgress(1);
+
+        Intent i = getIntent();
+
         getUserData();
     }
 
@@ -242,6 +250,32 @@ public class MainActivity extends ActionBarActivity {
                 // TODO: retrieve groups, etc from server...
             }
         }
+    }
+
+    private void startHomeFromRegister(String userId,String userName, String userPassword){
+
+        user = new User(userId, userName, userPassword);
+        loader.setProgress(50);
+        // Step 1: get courses from server
+        ServerFunction getCoursesTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_COURSES);
+        getCoursesTask.setUser(user);
+        getCoursesTask.setListener(new ServerFunction.ServerTaskListener() {
+            @Override
+            public void onPostExecuteConcluded(boolean result, Object retVal) {
+                if (result) {
+                    System.out.println("Server returned courses...");
+                    ArrayList<CourseItem> courseItems = (ArrayList<CourseItem>) retVal;
+                    if (courseItems.isEmpty()) System.out.println("User has no ccourses");
+                    for (CourseItem courseItem : courseItems) {
+                        System.out.println("Populating course for user: " + courseItem.getId());
+                        user.addScheduleItem(courseItem);
+                    }
+                    user.writeToDisk(getApplicationContext());
+                    onReadyStartHome(1);
+                }
+            }
+        });
+        getCoursesTask.execute((Void) null);
     }
 
     private void onReadyStartHome(int ready) {

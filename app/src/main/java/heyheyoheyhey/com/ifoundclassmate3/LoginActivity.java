@@ -1,10 +1,14 @@
 package heyheyoheyhey.com.ifoundclassmate3;
 
+import android.accounts.AbstractAccountAuthenticator;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.NetworkErrorException;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -14,6 +18,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -82,6 +90,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         if (!userEmail.equals("")) {
             mEmailView.setText(userEmail);
             System.out.println("email view set...");
+
         }
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -105,11 +114,20 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
+        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i2=new Intent(LoginActivity.this, registerActivity.class);
+                startActivityForResult(i2,1);
+
+            }
+        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        mRememberMeCheckBox = (CheckBox) findViewById(R.id.check_remember_me);
+       // mRememberMeCheckBox = (CheckBox) findViewById(R.id.check_remember_me);
 
         mLoadFromDisk = new LoadFromDiskSetting(this);
     }
@@ -169,6 +187,27 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+
+            /*
+                    System.out.println("goodhere");
+            Account account = new Account(email,"ifoundclassmate.com");
+            AccountManager am = AccountManager.get(this);
+            boolean accountCreated = am.addAccountExplicitly(account, password, null);
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                if (accountCreated) {  //Pass the new account back to the account manager
+                    AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+                    Bundle result = new Bundle();
+                    result.putString(AccountManager.KEY_ACCOUNT_NAME, email);
+                    result.putString(AccountManager.KEY_ACCOUNT_TYPE,"ifoundclassmate.com");
+                    response.onResult(result);
+                }
+                finish();
+            }
+            */
+
+
         }
     }
 
@@ -325,7 +364,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 System.out.println("here3");
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                String toServer = "-1\n" + mEmail + "\n" + mPassword + "\n";
+                String toServer = "login\n" + mEmail + "\n" + mPassword + "\n";
                 outToServer.writeBytes(toServer);
                 String authResult = inFromServer.readLine();
 
@@ -337,6 +376,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                     // obtain user id from server
                     mId = inFromServer.readLine();
                     System.out.println("The server given id is: " + mId);
+
+
                 }
                 clientSocket.close();
             } catch (ConnectException e) {
@@ -361,7 +402,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 intent.putExtra(MainActivity.USER_ID_MESSAGE, mId);
                 intent.putExtra(MainActivity.USER_NAME_MESSAGE, mEmail);
                 intent.putExtra(MainActivity.USER_PASSWORD_MESSAGE, mPassword);
-                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
+//                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
                 setResult(1, intent);
                 finish();
             } else {
@@ -377,7 +418,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         }
     }
 
-    public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private boolean loadFromDisk;
 
@@ -403,6 +445,39 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             // etc
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == 2){
+            return;
+        }
+
+        if (resultCode != 1) {
+            finish();
+            return;
+        }
+
+
+        if (requestCode == 1) {
+            System.out.println("accepting information from register class");
+            String mId = data.getStringExtra(registerActivity.mUSERID);
+            String mEmail = data.getStringExtra(registerActivity.mUSERNAME);
+            String mPassword = data.getStringExtra(registerActivity.mPASSWORD);
+            System.out.println(mId);
+
+            Intent intent = new Intent();
+            intent.putExtra(MainActivity.USER_ID_MESSAGE, mId);
+            intent.putExtra(MainActivity.USER_NAME_MESSAGE, mEmail);
+            intent.putExtra(MainActivity.USER_PASSWORD_MESSAGE, mPassword);
+            //                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
+            setResult(1, intent);
+            finish();
+        }
+    }
+
+
 
 }
 
