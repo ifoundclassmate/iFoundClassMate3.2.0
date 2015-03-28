@@ -78,7 +78,6 @@
             android:name=".LoginSettingsActivity"
             android:label="@string/title_activity_login_settings" >
         </activity>
-<<<<<<< HEAD
         <activity
             android:name=".addFriendsActivity"
             android:label="@string/title_activity_add_friends" >
@@ -86,7 +85,7 @@
         <activity
             android:name=".AddFriendActivity"
             android:label="@string/title_activity_add_friend" >
-=======
+        </activity>
 
         <activity
             android:name=".GroupViewActivity"
@@ -103,7 +102,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="heyheyoheyhey.com.ifoundclassmate3.GroupListActivity" />
->>>>>>> 83cf8bc3927f2db0d9d9538b9cabd76b2fb956af
         </activity>
         <activity
             android:name=".CreateMeetingActivity"

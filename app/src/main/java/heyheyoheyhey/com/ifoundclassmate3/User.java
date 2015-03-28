@@ -174,7 +174,6 @@ public class User implements Parcelable {
 
     public ArrayList<Group> getGroups() { return this.groups; }
 
-<<<<<<< HEAD
     public void SetCalendar(Context cxt){
         Log.d("Before create",this.scheduleItems.size()+"");
         calendarextract = new CalendarExtract(cxt);
@@ -182,9 +181,7 @@ public class User implements Parcelable {
         this.addScheduleItem(calendarextract);
         Log.d("After add",this.scheduleItems.size()+" " + this.getId());
     }
-=======
     public void addFriend(String friend) { this.friends.add(friend); }
 
     public ArrayList<String> getFriends() { return this.friends; }
->>>>>>> 83cf8bc3927f2db0d9d9538b9cabd76b2fb956af
 }
