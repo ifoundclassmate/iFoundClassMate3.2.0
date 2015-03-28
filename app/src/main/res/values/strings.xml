@@ -69,5 +69,6 @@
     <string name="title_activity_group_view">View Group</string>
     <string name="title_group_list">Groups</string>
     <string name="title_group_detail">Group Detail</string>
+    <string name="title_activity_create_meeting">Create Meeting</string>
 
 </resources>

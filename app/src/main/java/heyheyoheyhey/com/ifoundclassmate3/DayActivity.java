@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-import org.w3c.dom.Text;
-
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 
 //Represents a day schedule view
@@ -38,6 +36,10 @@ public class DayActivity extends ActionBarActivity {
     private static int year;
     protected static User user;
     protected static final int DEFAULT_PAGE_INDEX = 10;
+    protected int function;
+    protected ArrayList<ScheduleItem> memberScheduleItems;
+
+    public final static String SCHEDULE_FUNCTION = "SCHEDULE_FUNCTION";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -76,10 +78,16 @@ public class DayActivity extends ActionBarActivity {
         tabs.setScrollOffset(50);
 
         Intent intent = getIntent();
+        function = intent.getIntExtra(SCHEDULE_FUNCTION, 0);
         day = intent.getIntExtra(HomeActivity.CalendarFragment.SCHEDULE_DAY, 0);
         month = intent.getIntExtra(HomeActivity.CalendarFragment.SCHEDULE_MONTH, 0);
         year = intent.getIntExtra(HomeActivity.CalendarFragment.SCHEDULE_YEAR, 0);
         user = intent.getParcelableExtra(MainActivity.USER_MESSAGE);
+        if (function == 1) {
+            // group meeting creation
+            memberScheduleItems = new ArrayList<>();
+            // TODO: Task to get group member's schedule...
+        }
         System.out.println("Received date: " + day + month + year);
     }
 
