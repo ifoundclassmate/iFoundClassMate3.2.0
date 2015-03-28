@@ -66,5 +66,8 @@
     <string name="title_activity_course_view">Course Details</string>
     <string name="title_activity_add_friends">addFriendsActivity</string>
     <string name="title_activity_add_friend">AddFriendActivity</string>
+    <string name="title_activity_group_view">View Group</string>
+    <string name="title_group_list">Groups</string>
+    <string name="title_group_detail">Group Detail</string>
 
 </resources>

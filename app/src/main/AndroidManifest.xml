@@ -12,6 +12,9 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
@@ -53,8 +56,16 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
+            android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
+
         </activity>
+
+        <activity
+            android:name=".registerActivity"
+            android:label="register account">
+        </activity>
+
         <activity
             android:name=".AddCourseActivity"
             android:label="@string/title_activity_add_course" >
@@ -67,6 +78,7 @@
             android:name=".LoginSettingsActivity"
             android:label="@string/title_activity_login_settings" >
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".addFriendsActivity"
             android:label="@string/title_activity_add_friends" >
@@ -74,6 +86,24 @@
         <activity
             android:name=".AddFriendActivity"
             android:label="@string/title_activity_add_friend" >
+=======
+
+        <activity
+            android:name=".GroupViewActivity"
+            android:label="@string/title_activity_group_view" >
+        </activity>
+        <activity
+            android:name=".GroupListActivity"
+            android:label="@string/title_group_list" >
+        </activity>
+        <activity
+            android:name=".GroupDetailActivity"
+            android:label="@string/title_group_detail"
+            android:parentActivityName=".GroupListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="heyheyoheyhey.com.ifoundclassmate3.GroupListActivity" />
+>>>>>>> 83cf8bc3927f2db0d9d9538b9cabd76b2fb956af
         </activity>
     </application>
 

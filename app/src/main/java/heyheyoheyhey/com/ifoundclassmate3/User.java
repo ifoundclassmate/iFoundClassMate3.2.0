@@ -21,10 +21,11 @@ public class User implements Parcelable {
     private String id;
     private String userName;
     private String password;
-    //TODO: might need schedule as another parcelable...
     private ArrayList<ScheduleItem> scheduleItems;
     private CalendarExtract calendarextract;
     private ArrayList<Group> groups;
+
+    private ArrayList<String> friends;
 
     // necessary for parcelable
     public int describeContents() {
@@ -39,7 +40,7 @@ public class User implements Parcelable {
         //TODO: add other user fields when implemented.
         out.writeList(scheduleItems);
         out.writeList(groups);
-
+        out.writeList(friends);
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -59,7 +60,9 @@ public class User implements Parcelable {
         this.scheduleItems = (ArrayList<ScheduleItem>) in.readArrayList(ScheduleItem.class.getClassLoader());
         this.groups = new ArrayList<Group>();
         this.groups = (ArrayList<Group>) in.readArrayList(Group.class.getClassLoader());
-     }
+        this.friends = new ArrayList<String>();
+        this.friends = (ArrayList<String>) in.readArrayList(String.class.getClassLoader());
+    }
 
     // create user from saved file (note: groups not saved)
     public User(File userFile, Context context) {
@@ -110,6 +113,8 @@ public class User implements Parcelable {
         }
         // Groups are not saved on disk
         this.groups = new ArrayList<Group>();
+        // friends currently not saved on disk
+        this.friends = new ArrayList<String>();
     }
     public User(String id, String userName, String password) {
         this.id = id;
@@ -117,6 +122,7 @@ public class User implements Parcelable {
         this.password = password;
         this.scheduleItems = new ArrayList<ScheduleItem>();
         this.groups = new ArrayList<Group>();
+        this.friends = new ArrayList<String>();
     }
 
     public String getId() { return this.id; }
@@ -168,6 +174,7 @@ public class User implements Parcelable {
 
     public ArrayList<Group> getGroups() { return this.groups; }
 
+<<<<<<< HEAD
     public void SetCalendar(Context cxt){
         Log.d("Before create",this.scheduleItems.size()+"");
         calendarextract = new CalendarExtract(cxt);
@@ -175,4 +182,9 @@ public class User implements Parcelable {
         this.addScheduleItem(calendarextract);
         Log.d("After add",this.scheduleItems.size()+" " + this.getId());
     }
+=======
+    public void addFriend(String friend) { this.friends.add(friend); }
+
+    public ArrayList<String> getFriends() { return this.friends; }
+>>>>>>> 83cf8bc3927f2db0d9d9538b9cabd76b2fb956af
 }
