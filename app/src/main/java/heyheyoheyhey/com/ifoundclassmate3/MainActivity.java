@@ -202,6 +202,8 @@ public class MainActivity extends ActionBarActivity {
                 if (savedUser == null) {
                     savedUser = new User(userId, userName, userPassword);
                 }
+                System.out.println("===============ENTER=======2=========");
+                savedUser.SetCalendar(getApplicationContext());
                 startHome(savedUser);
             } else {
                 // not starting from disk... retrieve info from server.
@@ -229,6 +231,10 @@ public class MainActivity extends ActionBarActivity {
                     }
                 });
                 getCoursesTask.execute((Void) null);
+                // TODO: retrieve friends, groups, etc from server...
+                // TODO: getApplicationContext() DB
+                System.out.println("===============ENTER================");
+                user.SetCalendar(getApplicationContext());
 
                 // Step 2: get friends from server
                 ServerFunction getFriendsTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_FRIENDS);
