@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import heyheyoheyhey.com.ifoundclassmate3.activities.SplashActivity;
+
 
 public class NewGroupActivity extends ActionBarActivity {
 
@@ -67,5 +69,9 @@ public class NewGroupActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void Change(View view) {
+        startActivity(new Intent(NewGroupActivity.this, SplashActivity.class));
+        finish();
     }
 }

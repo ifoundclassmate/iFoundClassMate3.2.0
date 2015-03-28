@@ -1,14 +1,10 @@
 package heyheyoheyhey.com.ifoundclassmate3;
 
-import android.accounts.AbstractAccountAuthenticator;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.NetworkErrorException;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -18,10 +14,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
-import android.accounts.AccountManager;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +43,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBSettings;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
 
@@ -76,6 +75,9 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    static String id;
+    static String pw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +92,6 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         if (!userEmail.equals("")) {
             mEmailView.setText(userEmail);
             System.out.println("email view set...");
-
         }
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -114,20 +115,11 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-        Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
-        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i2=new Intent(LoginActivity.this, registerActivity.class);
-                startActivityForResult(i2,1);
-
-            }
-        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-       // mRememberMeCheckBox = (CheckBox) findViewById(R.id.check_remember_me);
+        mRememberMeCheckBox = (CheckBox) findViewById(R.id.check_remember_me);
 
         mLoadFromDisk = new LoadFromDiskSetting(this);
     }
@@ -182,31 +174,44 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
+            final QBUser qbUser = new QBUser();
+            qbUser.setLogin(email);
+            qbUser.setPassword(password);
+            id = email;
+            pw = password;
+            // Initialize QuickBlox application with credentials.
+            //
+            QBSettings.getInstance().fastConfigInit("20563", "jh-Z-TYuQf-k33N", "8HGNRx3V4EVXW2-");
+
+            // Create QuickBlox session
+            //
+            QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+                @Override
+                public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                    QBUsers.signUpSignInTask(qbUser, new QBEntityCallbackImpl<QBUser>() {
+                        @Override
+                        public void onSuccess(QBUser qbUser, Bundle bundle) {
+
+                        }
+
+                        @Override
+                        public void onError(List<String> strings) {
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                }
+            });
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-
-            /*
-                    System.out.println("goodhere");
-            Account account = new Account(email,"ifoundclassmate.com");
-            AccountManager am = AccountManager.get(this);
-            boolean accountCreated = am.addAccountExplicitly(account, password, null);
-
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                if (accountCreated) {  //Pass the new account back to the account manager
-                    AccountAuthenticatorResponse response = extras.getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-                    Bundle result = new Bundle();
-                    result.putString(AccountManager.KEY_ACCOUNT_NAME, email);
-                    result.putString(AccountManager.KEY_ACCOUNT_TYPE,"ifoundclassmate.com");
-                    response.onResult(result);
-                }
-                finish();
-            }
-            */
-
 
         }
     }
@@ -357,14 +362,15 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 mId = "100";
                 return true;
             }
-
+            /*
             try {
                 // connect to server
+
                 Socket clientSocket = new Socket(TEMP_IP, TEMP_PORT);
                 System.out.println("here3");
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                String toServer = "login\n" + mEmail + "\n" + mPassword + "\n";
+                String toServer = "-1\n" + mEmail + "\n" + mPassword + "\n";
                 outToServer.writeBytes(toServer);
                 String authResult = inFromServer.readLine();
 
@@ -372,14 +378,15 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 if (authResult.equals("0")) return false;
 
                     // user already exists or new user
+
                 else if (authResult.equals("1")) {
                     // obtain user id from server
                     mId = inFromServer.readLine();
                     System.out.println("The server given id is: " + mId);
-
-
                 }
                 clientSocket.close();
+
+
             } catch (ConnectException e) {
                 System.out.println("Not found server...");
 
@@ -387,6 +394,8 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             } catch (IOException e) {
                 return false;
             }
+            */
+
 
             return true;
         }
@@ -402,7 +411,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
                 intent.putExtra(MainActivity.USER_ID_MESSAGE, mId);
                 intent.putExtra(MainActivity.USER_NAME_MESSAGE, mEmail);
                 intent.putExtra(MainActivity.USER_PASSWORD_MESSAGE, mPassword);
-//                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
+                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
                 setResult(1, intent);
                 finish();
             } else {
@@ -418,8 +427,7 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
         }
     }
 
-
-public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private boolean loadFromDisk;
 
@@ -446,38 +454,13 @@ public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreference
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == 2){
-            return;
-        }
-
-        if (resultCode != 1) {
-            finish();
-            return;
-        }
-
-
-        if (requestCode == 1) {
-            System.out.println("accepting information from register class");
-            String mId = data.getStringExtra(registerActivity.mUSERID);
-            String mEmail = data.getStringExtra(registerActivity.mUSERNAME);
-            String mPassword = data.getStringExtra(registerActivity.mPASSWORD);
-            System.out.println(mId);
-
-            Intent intent = new Intent();
-            intent.putExtra(MainActivity.USER_ID_MESSAGE, mId);
-            intent.putExtra(MainActivity.USER_NAME_MESSAGE, mEmail);
-            intent.putExtra(MainActivity.USER_PASSWORD_MESSAGE, mPassword);
-            //                intent.putExtra(MainActivity.USER_REMEMBER_ME_MESSAGE, mRememberMeCheckBox.isChecked());
-            setResult(1, intent);
-            finish();
-        }
+    static public String getID() {
+        return id;
     }
 
-
+    static public String getPW() {
+        return pw;
+    }
 
 }
 

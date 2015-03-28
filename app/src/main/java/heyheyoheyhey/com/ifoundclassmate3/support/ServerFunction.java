@@ -24,8 +24,7 @@ import heyheyoheyhey.com.ifoundclassmate3.MainActivity;
 import heyheyoheyhey.com.ifoundclassmate3.User;
 
 /**
- * This class is intented to capture all server requests here.
- * Note that for now, the login does not use this class, which should be changed in the future.
+ * Created by Av23 on 2015-02-25.
  */
 public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
     public interface ServerTaskListener {
@@ -36,11 +35,8 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
     private User mUser;
     private CourseItem mCourseItem;
     private ServerTaskListener mTaskListener;
-    private String mFriendToAdd;
 
     private ArrayList<CourseItem> retCourseItems;
-    private ArrayList<String> retFriends;
-    private ArrayList<String> retUsers;
 
     public ServerFunction(String task) {
         mTask = task;
@@ -58,7 +54,7 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         mCourseItem = courseItem;
     }
 
-    public void setFriendToAdd(String friendToAdd) { mFriendToAdd = friendToAdd; }
+
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -69,15 +65,6 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
         } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_COURSES)) {
             if (mUser == null) return false;
             success = retrieveCourses();
-        } else if (mTask.equals(ServerUtils.TASK_ADD_FRIEND)) {
-            if (mUser == null || mFriendToAdd == null) return false;
-            success = addFriend();
-        } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_FRIENDS)) {
-            if (mUser == null) return false;
-            success = retrieveFriends();
-        } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_USERS_ENROLLED_IN_COURSE)) {
-            if (mCourseItem == null) return false;
-            success = retrieveRegisteredUsers();
         }
         return success;
 
@@ -85,19 +72,11 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(final Boolean success) {
-        // Inform any listeners waiting for the execution of this class to finish
+
         if (success) {
             if (mTask.equals(ServerUtils.TASK_RETRIEVE_COURSES)) {
                 if (mTaskListener != null) {
                     mTaskListener.onPostExecuteConcluded(success, retCourseItems);
-                }
-            } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_FRIENDS)) {
-                if (mTaskListener != null) {
-                    mTaskListener.onPostExecuteConcluded(success, retFriends);
-                }
-            } else if (mTask.equals(ServerUtils.TASK_RETRIEVE_USERS_ENROLLED_IN_COURSE)) {
-                if (mTaskListener != null) {
-                    mTaskListener.onPostExecuteConcluded(success, retUsers);
                 }
             }
 
@@ -308,110 +287,6 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
             return null;
         }
         return null;
-    }
-
-    // Method that contacts the server to add username = mFriendToAdd to the given user
-    // PRE: mUser, mFriendToAdd not null
-    // POST: returns true on success
-    private boolean addFriend() {
-
-        try {
-            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_FRIEND);
-            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String toServer = mTask + "\n" + mUser.getUsername() + "\n";
-            toServer += mUser.getPassword() + "\n" + mFriendToAdd + "\n";
-            outToServer.writeBytes(toServer);
-            String authResult = inFromServer.readLine();
-
-            // server-side error, or invalid/non-existant friend username
-            if (authResult.equals("0")) return false;
-
-            else if (authResult.equals("1")) {
-                // action completed
-                System.out.println("Server response OK: adding friend");
-            }
-            clientSocket.close();
-        } catch (ConnectException e) {
-            System.out.println("Not found server...");
-
-            return false;
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    // Method that retrieves the user's friends list from the server
-    // PRE: mUser not null
-    // POST: populates retFriends list with all the user's friends.
-    private boolean retrieveFriends() {
-        retFriends = new ArrayList<>();
-        try {
-            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_FRIEND);
-            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String toServer = ServerUtils.TASK_RETRIEVE_FRIENDS + "\n" + mUser.getId() + "\n";
-            outToServer.writeBytes(toServer);
-            String authResult = inFromServer.readLine();
-
-            // error server-side
-            if (authResult.equals("0")) return false;
-
-            // server OK
-            else if (authResult.equals("1")) {
-                // obtain user id from server
-                System.out.println("Server response OK: getting friends...");
-                int numFriends = Integer.parseInt(inFromServer.readLine());
-                for (int i = 0; i < numFriends; i++) {
-                    retFriends.add(inFromServer.readLine());
-                }
-            }
-            clientSocket.close();
-        } catch (ConnectException e) {
-            System.out.println("Not found server...");
-
-            return false;
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean retrieveRegisteredUsers() {
-        retUsers = new ArrayList<>();
-        try {
-            Socket clientSocket = new Socket(ServerUtils.TEMP_IP, ServerUtils.PORT_FRIEND);
-            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String toServer = ServerUtils.TASK_RETRIEVE_USERS_ENROLLED_IN_COURSE + "\n" + mCourseItem.getId() + "\n";
-            outToServer.writeBytes(toServer);
-            String authResult = inFromServer.readLine();
-
-            // error server-side
-            if (authResult.equals("0")) return false;
-
-                // server OK
-            else if (authResult.equals("1")) {
-                // obtain user id from server
-                System.out.println("Server response OK: getting users...");
-                int numUsers = Integer.parseInt(inFromServer.readLine());
-                for (int i = 0; i < numUsers; i++) {
-                    retUsers.add(inFromServer.readLine());
-                }
-            }
-            clientSocket.close();
-        } catch (ConnectException e) {
-            System.out.println("Not found server...");
-
-            return false;
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
     }
 
 }

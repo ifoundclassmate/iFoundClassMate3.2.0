@@ -18,11 +18,10 @@ public class User implements Parcelable {
     private String id;
     private String userName;
     private String password;
+    //TODO: might need schedule as another parcelable...
     private ArrayList<ScheduleItem> scheduleItems;
 
     private ArrayList<Group> groups;
-
-    private ArrayList<String> friends;
 
     // necessary for parcelable
     public int describeContents() {
@@ -37,7 +36,7 @@ public class User implements Parcelable {
         //TODO: add other user fields when implemented.
         out.writeList(scheduleItems);
         out.writeList(groups);
-        out.writeList(friends);
+
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -57,8 +56,6 @@ public class User implements Parcelable {
         this.scheduleItems = (ArrayList<ScheduleItem>) in.readArrayList(ScheduleItem.class.getClassLoader());
         this.groups = new ArrayList<Group>();
         this.groups = (ArrayList<Group>) in.readArrayList(Group.class.getClassLoader());
-        this.friends = new ArrayList<String>();
-        this.friends = (ArrayList<String>) in.readArrayList(String.class.getClassLoader());
     }
 
     // create user from saved file (note: groups not saved)
@@ -110,8 +107,6 @@ public class User implements Parcelable {
         }
         // Groups are not saved on disk
         this.groups = new ArrayList<Group>();
-        // friends currently not saved on disk
-        this.friends = new ArrayList<String>();
     }
     public User(String id, String userName, String password) {
         this.id = id;
@@ -119,7 +114,6 @@ public class User implements Parcelable {
         this.password = password;
         this.scheduleItems = new ArrayList<ScheduleItem>();
         this.groups = new ArrayList<Group>();
-        this.friends = new ArrayList<String>();
     }
 
     public String getId() { return this.id; }
@@ -170,8 +164,4 @@ public class User implements Parcelable {
     public void addToGroup(Group group) { this.groups.add(group); }
 
     public ArrayList<Group> getGroups() { return this.groups; }
-
-    public void addFriend(String friend) { this.friends.add(friend); }
-
-    public ArrayList<String> getFriends() { return this.friends; }
 }
