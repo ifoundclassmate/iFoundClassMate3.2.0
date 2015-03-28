@@ -58,14 +58,11 @@
             android:label="@string/title_activity_login"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize|stateVisible" >
-
         </activity>
-
         <activity
             android:name=".registerActivity"
-            android:label="register account">
+            android:label="register account" >
         </activity>
-
         <activity
             android:name=".AddCourseActivity"
             android:label="@string/title_activity_add_course" >
@@ -86,7 +83,6 @@
             android:name=".AddFriendActivity"
             android:label="@string/title_activity_add_friend" >
         </activity>
-
         <activity
             android:name=".GroupViewActivity"
             android:label="@string/title_activity_group_view" >
@@ -106,6 +102,10 @@
         <activity
             android:name=".CreateMeetingActivity"
             android:label="@string/title_activity_create_meeting" >
+        </activity>
+        <activity
+            android:name=".FriendProfileActivity"
+            android:label="@string/title_activity_friend_profile" >
         </activity>
     </application>
 

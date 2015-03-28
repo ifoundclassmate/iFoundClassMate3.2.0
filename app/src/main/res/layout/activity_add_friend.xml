@@ -7,38 +7,31 @@
     tools:context="heyheyoheyhey.com.ifoundclassmate3.AddFriendActivity">
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:id="@+id/searchFriendText"
-        android:layout_marginTop="34dp"
-        android:text="TRY HER EMAIL!"
+        android:layout_marginLeft="34dp"
+        android:layout_marginStart="34dp"
+        android:inputType="text"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="57dp"
-        android:layout_marginStart="57dp" />
+        android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
         android:text="Search"
         android:id="@+id/searchFriendBtn"
-        android:layout_alignBottom="@+id/searchFriendText"
+        android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/searchFriendText"
         android:layout_toEndOf="@+id/searchFriendText" />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/searchFriendprobar"
-        android:layout_below="@+id/searchFriendBtn"
-        android:layout_alignLeft="@+id/searchFriendText"
-        android:layout_alignStart="@+id/searchFriendText"
-        android:layout_alignRight="@+id/searchFriendBtn"
-        android:layout_alignEnd="@+id/searchFriendBtn"
-        android:max="100"
-        android:progress="5"
-        android:indeterminate="false" />
+        android:id="@+id/searchFriendList"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/searchFriendText" />
 
 </RelativeLayout>

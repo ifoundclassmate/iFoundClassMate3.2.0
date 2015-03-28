@@ -70,5 +70,6 @@
     <string name="title_group_list">Groups</string>
     <string name="title_group_detail">Group Detail</string>
     <string name="title_activity_create_meeting">Create Meeting</string>
+    <string name="title_activity_friend_profile">FriendProfileActivity</string>
 
 </resources>

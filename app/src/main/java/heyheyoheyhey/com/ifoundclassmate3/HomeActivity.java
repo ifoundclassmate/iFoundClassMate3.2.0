@@ -379,6 +379,7 @@ public class HomeActivity extends ActionBarActivity
                     for (String friend : user.getFriends()) friendlist.add(new Friend(friend));
                     Intent intent = new Intent(getActivity(), AddFriendActivity.class);
                     intent.putParcelableArrayListExtra("friendlist", friendlist);
+                    intent.putExtra("User",user);
                     startActivity(intent);
                 }
             });
