@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="heyheyoheyhey.com.ifoundclassmate3.AddFriendActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchFriendText"
+        android:layout_marginTop="34dp"
+        android:text="TRY HER EMAIL!"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="57dp"
+        android:layout_marginStart="57dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/searchFriendBtn"
+        android:layout_alignBottom="@+id/searchFriendText"
+        android:layout_toRightOf="@+id/searchFriendText"
+        android:layout_toEndOf="@+id/searchFriendText" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchFriendprobar"
+        android:layout_below="@+id/searchFriendBtn"
+        android:layout_alignLeft="@+id/searchFriendText"
+        android:layout_alignStart="@+id/searchFriendText"
+        android:layout_alignRight="@+id/searchFriendBtn"
+        android:layout_alignEnd="@+id/searchFriendBtn"
+        android:max="100"
+        android:progress="5"
+        android:indeterminate="false" />
+
+</RelativeLayout>

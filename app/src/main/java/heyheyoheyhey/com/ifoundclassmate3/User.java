@@ -3,6 +3,7 @@ package heyheyoheyhey.com.ifoundclassmate3;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import heyheyoheyhey.com.ifoundclassmate3.util.CalendarExtract;
 
 /**
  * Created by Av23 on 2015-02-13.
@@ -20,7 +23,7 @@ public class User implements Parcelable {
     private String password;
     //TODO: might need schedule as another parcelable...
     private ArrayList<ScheduleItem> scheduleItems;
-
+    private CalendarExtract calendarextract;
     private ArrayList<Group> groups;
 
     // necessary for parcelable
@@ -56,7 +59,7 @@ public class User implements Parcelable {
         this.scheduleItems = (ArrayList<ScheduleItem>) in.readArrayList(ScheduleItem.class.getClassLoader());
         this.groups = new ArrayList<Group>();
         this.groups = (ArrayList<Group>) in.readArrayList(Group.class.getClassLoader());
-    }
+     }
 
     // create user from saved file (note: groups not saved)
     public User(File userFile, Context context) {
@@ -164,4 +167,12 @@ public class User implements Parcelable {
     public void addToGroup(Group group) { this.groups.add(group); }
 
     public ArrayList<Group> getGroups() { return this.groups; }
+
+    public void SetCalendar(Context cxt){
+        Log.d("Before create",this.scheduleItems.size()+"");
+        calendarextract = new CalendarExtract(cxt);
+        Log.d("Before add",this.scheduleItems.size()+"");
+        this.addScheduleItem(calendarextract);
+        Log.d("After add",this.scheduleItems.size()+" " + this.getId());
+    }
 }
