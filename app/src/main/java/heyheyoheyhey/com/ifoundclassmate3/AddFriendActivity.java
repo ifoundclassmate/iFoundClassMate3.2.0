@@ -56,32 +56,47 @@ public class AddFriendActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 InputEmail = searchEmail.getText().toString();
-                //TODO CALL THE FUNCTION
-                /*
+
+                // TODO: DAN says addFriendTask now has listener - if friend add succeeded, result boolean
+                // will be true. otherwise, it is false. See below.....
+                // also consider a progressbar
                 ServerFunction addFriendTask = new ServerFunction(ServerUtils.TASK_ADD_FRIEND);
                 addFriendTask.setUser(user);
                 addFriendTask.setFriendToAdd(searchEmail.getText().toString());
-                addFriendTask.execute((Void) null );
-                //TODO CALL DAN , DO WE NEED TO WAIT FOR EXEC OF ADDFRIENDTASK?
-                //TODO CALL DAN , TEST IF ADD SUCCEED
-                ServerFunction getFriendsTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_FRIENDS);
-                getFriendsTask.setUser(user);
-                getFriendsTask.setListener(new ServerFunction.ServerTaskListener() {
+                addFriendTask.setListener(new ServerFunction.ServerTaskListener() {
                     @Override
                     public void onPostExecuteConcluded(boolean result, Object retVal) {
                         if (result) {
-                            System.out.println("FRIEND ACTIVITY: Server returned friends...");
-                            ArrayList<String> friends = (ArrayList<String>) retVal;
-                            if (friends.isEmpty()) System.out.println("User has no friends");
-                            for (String friend : friends) {
-                                System.out.println("FRIEND ACTIVITY: Populating friend for user: " + friend);
-                                user.addFriend(friend);
-                            }
+                            // TODO: add friend success!
+                            // Do stuff here, like adding the friend username to the list...
+                        } else {
+                            // TODO: failed to add friend :(
+                            // do stuff here...
                         }
                     }
                 });
-                getFriendsTask.execute((Void) null);
-                */
+                addFriendTask.execute((Void) null );
+                // Dont think we need getFriendsTask anymore...
+//                //TODO CALL DAN , DO WE NEED TO WAIT FOR EXEC OF ADDFRIENDTASK?
+//                //TODO CALL DAN , TEST IF ADD SUCCEED
+//                ServerFunction getFriendsTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_FRIENDS);
+//                getFriendsTask.setUser(user);
+//                getFriendsTask.setListener(new ServerFunction.ServerTaskListener() {
+//                    @Override
+//                    public void onPostExecuteConcluded(boolean result, Object retVal) {
+//                        if (result) {
+//                            System.out.println("FRIEND ACTIVITY: Server returned friends...");
+//                            ArrayList<String> friends = (ArrayList<String>) retVal;
+//                            if (friends.isEmpty()) System.out.println("User has no friends");
+//                            for (String friend : friends) {
+//                                System.out.println("FRIEND ACTIVITY: Populating friend for user: " + friend);
+//                                user.addFriend(friend);
+//                            }
+//                        }
+//                    }
+//                });
+//                getFriendsTask.execute((Void) null);
+
 
                 friends.add(0, InputEmail);
                 adapter.notifyDataSetChanged();
@@ -113,7 +128,7 @@ public class AddFriendActivity extends ActionBarActivity {
         int sizes = 10;
         Friend[] tmp = new Friend[sizes];
         if(!debug) {
-             System.arraycopy(originallist, 0, tmp, 0, originallist.length);
+            System.arraycopy(originallist, 0, tmp, 0, originallist.length);
         }
         else{
             for(int i = 0; i < tmp.length; i++)

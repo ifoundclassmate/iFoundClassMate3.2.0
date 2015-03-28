@@ -124,6 +124,11 @@ public class ServerFunction extends AsyncTask<Void, Void, Boolean> {
             }
 
         }
+        if (mTask.equals(ServerUtils.TASK_ADD_FRIEND)) {
+            if (mTaskListener != null) {
+                mTaskListener.onPostExecuteConcluded(success, null);
+            }
+        }
     }
 
     private boolean addOrDeleteCourse() {
