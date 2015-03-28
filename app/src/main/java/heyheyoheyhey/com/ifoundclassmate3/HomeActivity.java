@@ -284,8 +284,19 @@ public class HomeActivity extends ActionBarActivity
 
                 // TODO: this might change
                 newGroup.addUser(user.getUsername());
-
                 user.addToGroup(newGroup);
+
+                if (!ServerUtils.BYPASS_SERVER) {
+                    ServerFunction createGroupTask = new ServerFunction(ServerUtils.TASK_CREATE_GROUP);
+                    createGroupTask.setGroup(newGroup);
+                    createGroupTask.execute((Void) null);
+
+                    ServerFunction addUserToGroupTask = new ServerFunction(ServerUtils.TASK_ADD_USER_TO_GROUP);
+                    addUserToGroupTask.setFriendToAdd(user.getUsername());
+                    addUserToGroupTask.setGroup(newGroup);
+                    addUserToGroupTask.execute((Void) null);
+                }
+
                 listItems.add(newGroup.getId());
                 adapter.notifyDataSetChanged();
                 updateView();
