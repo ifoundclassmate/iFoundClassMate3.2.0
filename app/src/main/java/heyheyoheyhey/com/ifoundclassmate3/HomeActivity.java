@@ -23,6 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import heyheyoheyhey.com.ifoundclassmate3.activities.SplashActivity;
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerFunction;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
@@ -553,6 +554,10 @@ public class HomeActivity extends ActionBarActivity
             ((HomeActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+    }
+    public void Change(View view) {
+        startActivity(new Intent(HomeActivity.this, SplashActivity.class));
+        finish();
     }
 
 }
