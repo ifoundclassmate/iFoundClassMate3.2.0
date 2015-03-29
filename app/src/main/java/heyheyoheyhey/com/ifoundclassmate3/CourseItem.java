@@ -186,6 +186,7 @@ public class CourseItem extends ScheduleItem implements Parcelable {
                 // NOTE: daysOfWeek indexed at 1
                 ScheduleTime newTime = new ScheduleTime(startHours, startMins, endHours, endMins, length, temp.get(Calendar.DAY_OF_MONTH), temp.get(Calendar.MONTH), temp.get(Calendar.YEAR));
                 newTime.setEventName(this.id);
+                newTime.setType(2);
                 if (this.location != null) newTime.setDescription(this.location);
                 this.scheduleTimeArrayList.add(newTime);
             }

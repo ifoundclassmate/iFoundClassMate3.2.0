@@ -27,6 +27,9 @@ public abstract class ScheduleItem {
         public int endMins;
         public int length;
         int day, month, year;
+
+        public int type = 1; // for use in display only.
+
         public ScheduleTime(int startHours, int startMins, int endHours, int endMins, int length, int day, int month, int year) {
             this.startHours = startHours;
             this.startMins = startMins;
@@ -46,6 +49,9 @@ public abstract class ScheduleItem {
         public void setDescription(String description) {
             this.description = description;
         }
+
+        public void setType(int type) { this.type = type; }
+        public int getType() { return this.type; }
 
         // assume no conflicting timetables. also all in same day
         public int compareTo(ScheduleTime compare) {

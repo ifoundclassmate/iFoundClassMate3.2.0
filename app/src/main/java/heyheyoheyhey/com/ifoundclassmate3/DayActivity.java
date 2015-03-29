@@ -337,7 +337,20 @@ public class DayActivity extends ActionBarActivity {
                 TextView currentScheduleView = render(scheduleTime);
                 currentScheduleView.setId(currentScheduleView.getId() + test);
                 currentScheduleView.setWidth(400);
-                currentScheduleView.setBackgroundResource(R.drawable.schedule_course_block_red);
+                switch (scheduleTime.getType()) {
+                    case 1:
+                        currentScheduleView.setBackgroundResource(R.drawable.schedule_calendar_block_yellow);
+                        break;
+                    case 2:
+                        currentScheduleView.setBackgroundResource(R.drawable.schedule_course_block_red);
+                        break;
+                    case 3:
+                        currentScheduleView.setBackgroundResource(R.drawable.schedule_group_block_blue);
+                        break;
+                    default:
+                        currentScheduleView.setBackgroundResource(R.drawable.schedule_course_block_red);
+                        break;
+                }
                 currentScheduleView.setTextColor(Color.BLACK);
                 currentScheduleView.setHeight(scheduleTime.length * WIDTH_BETWEEN_HOURS / 60);
                 //LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
