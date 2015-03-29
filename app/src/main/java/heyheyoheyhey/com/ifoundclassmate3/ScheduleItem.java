@@ -1,5 +1,8 @@
 package heyheyoheyhey.com.ifoundclassmate3;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
@@ -34,6 +37,9 @@ public abstract class ScheduleItem {
             this.month = month;
             this.year = year;
         }
+        public int getDay(){return day;}
+        public int getMonth(){ return month;}
+        public int getYear(){ return year;}
         public void setEventName(String eventName) {
             this.eventName = eventName;
         }
@@ -46,6 +52,31 @@ public abstract class ScheduleItem {
             return (this.startHours - compare.startHours) * 100 + (this.startMins - compare.startMins);
         }
 
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(eventName);
+            dest.writeString(description);
+            dest.writeInt(startHours);
+            dest.writeInt(startMins);
+            dest.writeInt(endHours);
+            dest.writeInt(endMins);
+            dest.writeInt(length);
+            dest.writeInt(day);
+            dest.writeInt(month);
+            dest.writeInt(year);
+        }
+
+        public ScheduleTime(Parcel in) {
+            eventName = in.readString();
+            description = in.readString();
+            startHours = in.readInt();
+            startMins = in.readInt();
+            endHours = in.readInt();
+            endMins = in.readInt();
+            length = in.readInt();
+            day = in.readInt();
+            month = in.readInt();
+            year = in.readInt();
+        }
     }
 }
 
