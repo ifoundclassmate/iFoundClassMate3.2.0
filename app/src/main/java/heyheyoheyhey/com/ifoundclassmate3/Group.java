@@ -24,9 +24,7 @@ public class Group implements Parcelable {
         out.writeString(this.id);
         out.writeString(this.description);
         out.writeList(users);
-        MeetingItem[] temp = new MeetingItem[meetings.size()];
-        meetings.toArray(temp);
-        out.writeParcelableArray(temp, 2);
+        out.writeList(meetings);
     }
 
     public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>() {
@@ -43,8 +41,7 @@ public class Group implements Parcelable {
         this.description = in.readString();
         this.users = new ArrayList<String>();
         this.users = (ArrayList<String>) in.readArrayList(String.class.getClassLoader());
-        MeetingItem[] temp = (MeetingItem[]) in.readParcelableArray(MeetingItem.class.getClassLoader());
-        this.meetings = new ArrayList<MeetingItem>(Arrays.asList(temp));
+        this.meetings = (ArrayList<MeetingItem>) in.readArrayList(MeetingItem.class.getClassLoader());
     }
 
     public Group(String id, String description) {
@@ -77,4 +74,6 @@ public class Group implements Parcelable {
     }
 
     public ArrayList<MeetingItem> getMeetings() { return this.meetings; }
+
+    public void addMeetingItem(MeetingItem meetingItem) { this.meetings.add(meetingItem); }
 }

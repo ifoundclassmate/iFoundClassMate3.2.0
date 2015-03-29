@@ -63,4 +63,25 @@ public class CreateMeetingActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 1) {
+            int sh = data.getIntExtra("SH", 3);
+            int sm = data.getIntExtra("SM", 3);
+            int eh = data.getIntExtra("EH", 4);
+            int em = data.getIntExtra("EM", 4);
+            long time = data.getLongExtra("T", 5);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            int day = calendar.get(Calendar.DATE) - 1;
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            MeetingItem newMeeting = new MeetingItem(sh, sm, eh, em, day, month, year);
+            Intent intent = new Intent();
+            intent.putExtra("MI", newMeeting);
+            setResult(1, intent);
+            finish();
+        }
+    }
 }

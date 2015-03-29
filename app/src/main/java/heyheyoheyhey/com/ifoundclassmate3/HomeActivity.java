@@ -217,9 +217,11 @@ public class HomeActivity extends ActionBarActivity
         public static final String NEW_GROUP = "NEW_GROUP";
 
         public static final String VIEW_GROUP = "VIEW_GROUP";
+        public static final String VIEW_GROUP_USER = "USER";
         private View myView;
         private ArrayList<String> listItems;
         TextViewListAdapter adapter;
+        private Group groupBeingViewed;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -280,28 +282,42 @@ public class HomeActivity extends ActionBarActivity
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == 1) {
-                // new group added: add group id to list
-                Group newGroup = data.getParcelableExtra(NEW_GROUP);
-
-                // TODO: this might change
-                newGroup.addUser(user.getUsername());
-                user.addToGroup(newGroup);
-
-                if (!ServerUtils.BYPASS_SERVER) {
-                    ServerFunction createGroupTask = new ServerFunction(ServerUtils.TASK_CREATE_GROUP);
-                    createGroupTask.setGroup(newGroup);
-                    createGroupTask.execute((Void) null);
-
-                    ServerFunction addUserToGroupTask = new ServerFunction(ServerUtils.TASK_ADD_USER_TO_GROUP);
-                    addUserToGroupTask.setFriendToAdd(user.getUsername());
-                    addUserToGroupTask.setGroup(newGroup);
-                    addUserToGroupTask.execute((Void) null);
+            if (requestCode == 3) {
+                System.out.println("HEREQ: " + resultCode);
+                if (resultCode == 1) {
+                    System.out.println("HERE");
+                    user.getGroups().remove(groupBeingViewed);
+                    Group newGroup = data.getParcelableExtra("G");
+                    user.addToGroup(newGroup);
+                    ArrayList<MeetingItem> meetingItems = data.getParcelableArrayListExtra("M");
+                    for (MeetingItem meetingItem : meetingItems) {
+                        user.addScheduleItem(meetingItem);
+                    }
                 }
+            } else {
+                if (resultCode == 1) {
+                    // new group added: add group id to list
+                    Group newGroup = data.getParcelableExtra(NEW_GROUP);
 
-                listItems.add(newGroup.getId());
-                adapter.notifyDataSetChanged();
-                updateView();
+                    // TODO: this might change
+                    newGroup.addUser(user.getUsername());
+                    user.addToGroup(newGroup);
+
+                    if (!ServerUtils.BYPASS_SERVER) {
+                        ServerFunction createGroupTask = new ServerFunction(ServerUtils.TASK_CREATE_GROUP);
+                        createGroupTask.setGroup(newGroup);
+                        createGroupTask.execute((Void) null);
+
+                        ServerFunction addUserToGroupTask = new ServerFunction(ServerUtils.TASK_ADD_USER_TO_GROUP);
+                        addUserToGroupTask.setFriendToAdd(user.getUsername());
+                        addUserToGroupTask.setGroup(newGroup);
+                        addUserToGroupTask.execute((Void) null);
+                    }
+
+                    listItems.add(newGroup.getId());
+                    adapter.notifyDataSetChanged();
+                    updateView();
+                }
             }
 
         }
@@ -323,7 +339,9 @@ public class HomeActivity extends ActionBarActivity
                     if (groupId.equals(group.getId())) {
                         Intent intent = new Intent(getActivity(), GroupViewActivity.class);
                         intent.putExtra(VIEW_GROUP, group);
-                        startActivity(intent);
+                        intent.putExtra(VIEW_GROUP_USER, user);
+                        groupBeingViewed = group;
+                        startActivityForResult(intent, 3);
                     }
                 }
             }
