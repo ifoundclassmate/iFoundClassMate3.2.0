@@ -346,6 +346,10 @@ public class DayActivity extends ActionBarActivity {
                 linearLayout.setLayoutParams(lp);
                 relativeLayout.addView(linearLayout);
             }
+<<<<<<< HEAD
+=======
+            //start here
+
             if (function == 1) {
                 // TODO: add steps
                 // step 1 - start time
@@ -356,6 +360,7 @@ public class DayActivity extends ActionBarActivity {
                                 LinearLayout.LayoutParams.WRAP_CONTENT));
             }
 
+>>>>>>> v1
             return rootView;
         }
 
