@@ -17,8 +17,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -217,6 +219,9 @@ public class DayActivity extends ActionBarActivity {
         private static String cDayOfWeek;
         private static String cMonth;
         private static int mDay, mMonth, mYear;
+        private static long myTime;
+
+        private static int meetingStartTimeHours, meetingStartTimeMins, meetingEndTimeHours, meetingEndTimeMins;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -252,6 +257,7 @@ public class DayActivity extends ActionBarActivity {
             mYear = calendar.get(Calendar.YEAR);
             mMonth = calendar.get(Calendar.MONTH);
             test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
+            myTime = calendar.getTime().getTime();
             return fragment;
         }
 
@@ -271,6 +277,7 @@ public class DayActivity extends ActionBarActivity {
                     mYear = calendar.get(Calendar.YEAR);
                     mMonth = calendar.get(Calendar.MONTH);
                     test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
+                    myTime = calendar.getTime().getTime();
                 }
             }
         }
@@ -293,6 +300,7 @@ public class DayActivity extends ActionBarActivity {
                     mYear = calendar.get(Calendar.YEAR);
                     mMonth = calendar.get(Calendar.MONTH);
                     test = cDayOfWeek + " " + cMonth + " " + mDay + ", " + mYear;
+                    myTime = calendar.getTime().getTime();
                 }
             }
         }
@@ -313,7 +321,7 @@ public class DayActivity extends ActionBarActivity {
                 scheduleTimes.addAll(scheduleItem.getScheduleForDay(mDay, mMonth, mYear));
             }
             Collections.sort(scheduleTimes);
-            RelativeLayout relativeLayout = (RelativeLayout) rootView.findViewById(R.id.MondayRL1);
+            final RelativeLayout relativeLayout = (RelativeLayout) rootView.findViewById(R.id.MondayRL1);
             // final int WIDTH_BETWEEN_HOURS = R.dimen.activity_day_hour_distance;
             final int WIDTH_BETWEEN_HOURS = ProjectUtils.dpToPx(getActivity().getApplicationContext(), 60);
             int dimen = R.dimen.activity_day_hour_distance;
@@ -349,11 +357,105 @@ public class DayActivity extends ActionBarActivity {
             if (function == 1) {
                 // TODO: add steps
                 // step 1 - start time
-                TextView startTime = new TextView(getActivity().getApplicationContext());
-                startTime.setBackgroundResource(R.drawable.meeting_start_time);
-                startTime.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                int step = 1;
+                final Button set = (Button) rootView.findViewById(R.id.btnSet);
+                final LinearLayout startTime = (LinearLayout) relativeLayout.findViewById(R.id.startTimeDivider);
+                final LinearLayout endTime = (LinearLayout) relativeLayout.findViewById(R.id.endTimeDivider);
+
+
+                relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            final float y = event.getY();
+                            relativeLayout.removeView(startTime);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            layoutParams.topMargin = (int) y;
+                            startTime.setVisibility(View.VISIBLE);
+                            relativeLayout.addView(startTime, layoutParams);
+                            set.setVisibility(View.VISIBLE);
+                            set.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    TextView text = (TextView) startTime.findViewById(R.id.tvStartTimeDivider);
+                                    text.setTextColor(Color.GREEN);
+                                    final int NUM_HOURS = 18;
+                                    boolean found = false;
+                                    for (int i = 0; i < NUM_HOURS; i++) {
+                                        View view = relativeLayout.getChildAt(i);
+                                        System.out.println(view.getTop() + " " + view.getId());
+                                        if ((int) y < view.getTop()) {
+                                            meetingStartTimeHours = i + 4;
+                                            meetingStartTimeMins = (((int) y - 60) % 120) / 2;
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) {
+                                        meetingStartTimeHours = NUM_HOURS + 4;
+                                        meetingStartTimeMins = (((int) y - 60) % 120) / 2;
+                                    }
+                                    set.setEnabled(false);
+
+                                    // new listener for end time bar...
+                                    relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                                final float y = event.getY();
+                                                relativeLayout.removeView(endTime);
+                                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                                if ((int) y <= startTime.getTop()) {
+                                                    layoutParams.topMargin = startTime.getTop() + 5;
+                                                } else {
+                                                    layoutParams.topMargin = (int) y;
+                                                }
+                                                endTime.setVisibility(View.VISIBLE);
+                                                relativeLayout.addView(endTime, layoutParams);
+                                                set.setEnabled(true);
+                                                set.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        TextView text = (TextView) endTime.findViewById(R.id.tvEndTimeDivider);
+                                                        text.setTextColor(Color.GREEN);
+                                                        final int NUM_HOURS = 18;
+                                                        boolean found = false;
+                                                        for (int i = 0; i < NUM_HOURS; i++) {
+                                                            View view = relativeLayout.getChildAt(i);
+                                                            System.out.println(view.getTop() + " " + view.getId());
+                                                            if ((int) y < view.getTop()) {
+                                                                meetingEndTimeHours = i + 4;
+                                                                meetingEndTimeMins = (((int) y - 60) % 120) / 2;
+                                                                found = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (!found) {
+                                                            meetingEndTimeHours = NUM_HOURS + 4;
+                                                            meetingEndTimeMins = (((int) y - 60) % 120) / 2;
+                                                        }
+                                                        set.setEnabled(false);
+                                                        Intent intent = new Intent();
+                                                        intent.putExtra("SH", meetingStartTimeHours);
+                                                        intent.putExtra("SM", meetingStartTimeMins);
+                                                        intent.putExtra("EH", meetingEndTimeHours);
+                                                        intent.putExtra("EM", meetingEndTimeMins);
+                                                        intent.putExtra("T", myTime);
+                                                        getActivity().setResult(1, intent);
+                                                        getActivity().finish();
+                                                    }
+                                                });
+                                            }
+                                            return true;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        return true;
+                    }
+                });
             }
 
             return rootView;

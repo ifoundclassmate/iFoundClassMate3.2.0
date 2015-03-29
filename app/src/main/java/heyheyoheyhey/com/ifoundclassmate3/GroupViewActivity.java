@@ -25,6 +25,8 @@ public class GroupViewActivity extends ActionBarActivity {
     final static String CREATE_MEETING_LIST_ITEM = " + Click here to CREATE Meeting!";
 
     protected User user;
+    private ArrayList<MeetingItem> retMeetings;
+    private Intent retIntent = new Intent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +36,21 @@ public class GroupViewActivity extends ActionBarActivity {
         mGroup = getIntent().getParcelableExtra(HomeActivity.GroupFragment.VIEW_GROUP);
         user = getIntent().getParcelableExtra(HomeActivity.GroupFragment.VIEW_GROUP_USER);
 
+        setViews();
+        retMeetings = new ArrayList<>();
+
+    }
+
+    private void setViews() {
         // set views
         TextView lblGroupName = (TextView) findViewById(R.id.lblGroupName);
-        lblGroupName.setText(mGroup.getId());
+        lblGroupName.setText("Group name: " + mGroup.getId());
 
         TextView lblGroupDesc = (TextView) findViewById(R.id.lblGroupDesc);
-        lblGroupDesc.setText(mGroup.getDescription());
+        lblGroupDesc.setText("Description: " + mGroup.getDescription());
 
         LinearLayout memberListView = (LinearLayout) findViewById(R.id.memberListView);
+        memberListView.removeAllViews();
         ArrayList<String> listItems = new ArrayList<>();
         listItems.addAll(mGroup.getUsers());
         listItems.add(INVITE_USER_LIST_ITEM);
@@ -53,6 +62,7 @@ public class GroupViewActivity extends ActionBarActivity {
         }
 
         LinearLayout meetingListView = (LinearLayout) findViewById(R.id.meetingListView);
+        meetingListView.removeAllViews();
         meetingListView.setScrollContainer(false);
         final ArrayList<String> meetingListItems = new ArrayList<>();
         for (MeetingItem meeting : mGroup.getMeetings()) {
@@ -74,7 +84,6 @@ public class GroupViewActivity extends ActionBarActivity {
             meetingListView.addView(v);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,5 +117,34 @@ public class GroupViewActivity extends ActionBarActivity {
                 startActivityForResult(intent, 1);
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 1) {
+            MeetingItem meetingItem = data.getParcelableExtra("MI");
+            if (meetingItem != null) {
+                this.mGroup.addMeetingItem(meetingItem);
+                retMeetings.add(meetingItem);
+                setViews();
+                retIntent.putExtra("M", retMeetings);
+                retIntent.putExtra("G", mGroup);
+                setResult(1, retIntent);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+//            if (retMeetings.isEmpty()) {
+//                super.onDestroy();
+//                return;
+//            }
+//            Intent retIntent = new Intent();
+//            retIntent.putExtra("M", retMeetings);
+//            retIntent.putExtra("G", mGroup);
+//            setResult(1, retIntent);
+
+        super.onDestroy();
     }
 }
