@@ -23,10 +23,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import heyheyoheyhey.com.ifoundclassmate3.activities.SplashActivity;
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerFunction;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
+import heyheyoheyhey.com.ifoundclassmate3.util.Friend;
 
 
 public class HomeActivity extends ActionBarActivity
@@ -363,7 +363,7 @@ public class HomeActivity extends ActionBarActivity
 
             // TODO: for now, just populate the listView with friend names, in the future
             // friends should be tied to a course.
-            this.listItems = new ArrayList<>();
+            this.listItems = new ArrayList<String>();
             for (String friend : user.getFriends()) listItems.add(friend);
             this.adapter = new TextViewListAdapter(getActivity().getApplicationContext(), R.layout.adapter_group_list, listItems);
             final ListView listView = (ListView) rootView.findViewById(R.id.classmateListView);
@@ -374,6 +374,13 @@ public class HomeActivity extends ActionBarActivity
             btnFindClassmate.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // TODO: open find classmate dialog box
+                    ArrayList<Friend> friendlist;
+                    friendlist = new ArrayList<Friend>();
+                    for (String friend : user.getFriends()) friendlist.add(new Friend(friend));
+                    Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                    intent.putParcelableArrayListExtra("friendlist", friendlist);
+                    intent.putExtra("User",user);
+                    startActivity(intent);
                 }
             });
 
@@ -554,10 +561,6 @@ public class HomeActivity extends ActionBarActivity
             ((HomeActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
-    }
-    public void Change(View view) {
-        startActivity(new Intent(HomeActivity.this, SplashActivity.class));
-        finish();
     }
 
 }

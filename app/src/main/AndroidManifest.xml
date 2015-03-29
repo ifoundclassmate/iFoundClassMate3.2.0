@@ -15,9 +15,10 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
-        android:name=".ApplicationSingleton"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -75,6 +76,14 @@
             android:label="@string/title_activity_login_settings" >
         </activity>
         <activity
+            android:name=".addFriendsActivity"
+            android:label="@string/title_activity_add_friends" >
+        </activity>
+        <activity
+            android:name=".AddFriendActivity"
+            android:label="@string/title_activity_add_friend" >
+        </activity>
+        <activity
             android:name=".GroupViewActivity"
             android:label="@string/title_activity_group_view" >
         </activity>
@@ -95,24 +104,8 @@
             android:label="@string/title_activity_create_meeting" >
         </activity>
         <activity
-            android:name=".activities.ChatActivity"
-            android:label="@string/title_activity_chat" >
-        </activity>
-        <activity
-            android:name=".activities.DialogsActivity"
-            android:label="@string/title_activity_dialogs" >
-        </activity>
-        <activity
-            android:name=".activities.FriendIDActivity"
-            android:label="@string/title_activity_friend_id" >
-        </activity>
-        <activity
-            android:name=".activities.NewDialogActivity"
-            android:label="@string/title_activity_new_dialog" >
-        </activity>
-        <activity
-            android:name=".activities.SplashActivity"
-            android:label="@string/title_activity_splash" >
+            android:name=".FriendProfileActivity"
+            android:label="@string/title_activity_friend_profile" >
         </activity>
     </application>
 

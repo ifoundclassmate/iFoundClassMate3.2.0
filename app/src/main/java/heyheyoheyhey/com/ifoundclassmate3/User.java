@@ -3,6 +3,7 @@ package heyheyoheyhey.com.ifoundclassmate3;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import heyheyoheyhey.com.ifoundclassmate3.util.CalendarExtract;
 
 /**
  * Created by Av23 on 2015-02-13.
@@ -19,7 +22,7 @@ public class User implements Parcelable {
     private String userName;
     private String password;
     private ArrayList<ScheduleItem> scheduleItems;
-
+    private CalendarExtract calendarextract;
     private ArrayList<Group> groups;
 
     private ArrayList<String> friends;
@@ -171,6 +174,13 @@ public class User implements Parcelable {
 
     public ArrayList<Group> getGroups() { return this.groups; }
 
+    public void SetCalendar(Context cxt){
+        Log.d("Before create",this.scheduleItems.size()+"");
+        calendarextract = new CalendarExtract(cxt);
+        Log.d("Before add",this.scheduleItems.size()+"");
+        this.addScheduleItem(calendarextract);
+        Log.d("After add",this.scheduleItems.size()+" " + this.getId());
+    }
     public void addFriend(String friend) { this.friends.add(friend); }
 
     public ArrayList<String> getFriends() { return this.friends; }
