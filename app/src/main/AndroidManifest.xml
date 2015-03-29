@@ -75,14 +75,6 @@
             android:label="@string/title_activity_login_settings" >
         </activity>
         <activity
-                   android:name=".addFriendsActivity"
-                   android:label="@string/title_activity_add_friends" >
-        </activity>
-        <activity
-             android:name=".AddFriendActivity"
-                android:label="@string/title_activity_add_friend" >
-        </activity>
-        <activity
             android:name=".GroupViewActivity"
             android:label="@string/title_activity_group_view" >
         </activity>
@@ -90,11 +82,6 @@
             android:name=".GroupListActivity"
             android:label="@string/title_group_list" >
         </activity>
-        <activity
-            android:name=".FriendProfileActivity"
-            android:label="@string/title_activity_friend_profile">
-
-            </activity>
         <activity
             android:name=".GroupDetailActivity"
             android:label="@string/title_group_detail"

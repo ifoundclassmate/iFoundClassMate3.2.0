@@ -27,7 +27,6 @@ import heyheyoheyhey.com.ifoundclassmate3.activities.SplashActivity;
 import heyheyoheyhey.com.ifoundclassmate3.support.ProjectUtils;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerFunction;
 import heyheyoheyhey.com.ifoundclassmate3.support.ServerUtils;
-import heyheyoheyhey.com.ifoundclassmate3.util.Friend;
 
 
 public class HomeActivity extends ActionBarActivity
@@ -375,13 +374,6 @@ public class HomeActivity extends ActionBarActivity
             btnFindClassmate.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     // TODO: open find classmate dialog box
-                                        ArrayList<Friend> friendlist;
-                                        friendlist = new ArrayList<Friend>();
-                                        for (String friend : user.getFriends()) friendlist.add(new Friend(friend));
-                                        Intent intent = new Intent(getActivity(), AddFriendActivity.class);
-                                        intent.putParcelableArrayListExtra("friendlist", friendlist);
-                                        intent.putExtra("User",user);
-                                        startActivity(intent);
                 }
             });
 
