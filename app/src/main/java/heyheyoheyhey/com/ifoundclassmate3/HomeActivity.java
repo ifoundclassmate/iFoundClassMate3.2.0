@@ -216,6 +216,7 @@ public class HomeActivity extends ActionBarActivity
         public static final String NEW_GROUP = "NEW_GROUP";
 
         public static final String VIEW_GROUP = "VIEW_GROUP";
+        public static final String VIEW_GROUP_USER = "USER";
         private View myView;
         private ArrayList<String> listItems;
         TextViewListAdapter adapter;
@@ -322,6 +323,7 @@ public class HomeActivity extends ActionBarActivity
                     if (groupId.equals(group.getId())) {
                         Intent intent = new Intent(getActivity(), GroupViewActivity.class);
                         intent.putExtra(VIEW_GROUP, group);
+                        intent.putExtra(VIEW_GROUP_USER, user);
                         startActivity(intent);
                     }
                 }

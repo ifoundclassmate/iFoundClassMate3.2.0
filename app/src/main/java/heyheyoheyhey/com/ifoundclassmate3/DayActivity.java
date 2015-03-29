@@ -36,7 +36,7 @@ public class DayActivity extends ActionBarActivity {
     private static int year;
     protected static User user;
     protected static final int DEFAULT_PAGE_INDEX = 10;
-    protected int function;
+    protected static int function;
     protected ArrayList<ScheduleItem> memberScheduleItems;
 
     public final static String SCHEDULE_FUNCTION = "SCHEDULE_FUNCTION";
@@ -305,6 +305,10 @@ public class DayActivity extends ActionBarActivity {
             TextView dayText = (TextView) rootView.findViewById(R.id.txtDay);
 
             dayText.setText(test);
+
+            // TODO: add group schedule to schedule here...
+
+
             ArrayList<ScheduleItem.ScheduleTime> scheduleTimes = new ArrayList<>();
             Log.d("In DayActivity", "" + user.getScheduleItems().size() + " " + user.getId());
             for (ScheduleItem scheduleItem : user.getScheduleItems()) {
@@ -346,6 +350,16 @@ public class DayActivity extends ActionBarActivity {
                 relativeLayout.addView(linearLayout);
             }
             //start here
+
+            if (function == 1) {
+                // TODO: add steps
+                // step 1 - start time
+                TextView startTime = new TextView(getActivity().getApplicationContext());
+                startTime.setBackgroundResource(R.drawable.meeting_start_time);
+                startTime.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+            }
 
             return rootView;
         }
