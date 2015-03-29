@@ -365,7 +365,57 @@
                 android:background="@android:color/darker_gray"
                 android:layout_alignTop="@+id/text11pm1"/>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/startTimeDivider"
+                android:visibility="invisible">
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@android:color/holo_red_dark" />
+
+                <TextView
+                    android:layout_height="20dp"
+                    android:layout_width="match_parent"
+                    android:text="Start Time"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:id="@+id/tvStartTimeDivider"/>
+                </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/endTimeDivider"
+                android:visibility="invisible">
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dip"
+                    android:background="@android:color/holo_red_dark" />
+
+                <TextView
+                    android:layout_height="20dp"
+                    android:layout_width="match_parent"
+                    android:text="End Time"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:id="@+id/tvEndTimeDivider"/>
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:id="@+id/btnSet"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible" />
 
 </RelativeLayout>

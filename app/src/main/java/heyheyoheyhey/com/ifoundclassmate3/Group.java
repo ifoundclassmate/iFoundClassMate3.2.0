@@ -74,4 +74,6 @@ public class Group implements Parcelable {
     }
 
     public ArrayList<MeetingItem> getMeetings() { return this.meetings; }
+
+    public void addMeetingItem(MeetingItem meetingItem) { this.meetings.add(meetingItem); }
 }

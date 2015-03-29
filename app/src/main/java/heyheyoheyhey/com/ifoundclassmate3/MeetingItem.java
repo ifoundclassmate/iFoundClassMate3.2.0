@@ -67,6 +67,7 @@ public class MeetingItem extends ScheduleItem implements Parcelable{
         ArrayList<ScheduleTime> retVal = new ArrayList<>();
         if (this.day == day && this.month == month && this.year == year) {
             ScheduleTime myTime = new ScheduleTime(startHours, startMins, endHours, endMins, length, this.day, this.month, this.year);
+            myTime.setEventName("Group Meeting");
             retVal.add(myTime);
         }
         return retVal;
