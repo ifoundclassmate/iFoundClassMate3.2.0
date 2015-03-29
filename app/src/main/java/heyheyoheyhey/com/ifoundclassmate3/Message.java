@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 public class Message extends ActionBarActivity {
     String name;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

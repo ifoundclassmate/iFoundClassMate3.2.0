@@ -42,6 +42,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBSettings;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -75,6 +82,9 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
     private CheckBox mRememberMeCheckBox;
     private View mProgressView;
     private View mLoginFormView;
+
+    static String id;
+    static String pw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +192,39 @@ public class LoginActivity extends ActionBarActivity implements LoaderCallbacks<
             // form field with an error.
             focusView.requestFocus();
         } else {
+
+            final QBUser qbUser = new QBUser();
+            qbUser.setLogin(email);
+            qbUser.setPassword(password);
+            id = email;
+            pw = password;
+            // Initialize QuickBlox application with credentials.
+            //
+            QBSettings.getInstance().fastConfigInit("20563", "jh-Z-TYuQf-k33N", "8HGNRx3V4EVXW2-");
+
+            // Create QuickBlox session
+            //
+            QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+                @Override
+                public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                    QBUsers.signUpSignInTask(qbUser, new QBEntityCallbackImpl<QBUser>() {
+                        @Override
+                        public void onSuccess(QBUser qbUser, Bundle bundle) {
+
+                        }
+
+                        @Override
+                        public void onError(List<String> strings) {
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onError(List<String> errors) {
+                }
+            });
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
@@ -476,7 +519,13 @@ public class LoadFromDiskSetting implements SharedPreferences.OnSharedPreference
             finish();
         }
     }
+    static public String getID() {
+        return id;
+    }
 
+    static public String getPW() {
+        return pw;
+    }
 
 
 }

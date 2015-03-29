@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -306,9 +305,7 @@ public class DayActivity extends ActionBarActivity {
 
             dayText.setText(test);
             ArrayList<ScheduleItem.ScheduleTime> scheduleTimes = new ArrayList<>();
-            Log.d("In DayActivity", "" + user.getScheduleItems().size() + " " + user.getId());
             for (ScheduleItem scheduleItem : user.getScheduleItems()) {
-                Log.d("Schedule Item:", scheduleItem.getClass().toString());
                 scheduleTimes.addAll(scheduleItem.getScheduleForDay(mDay, mMonth, mYear));
             }
             Collections.sort(scheduleTimes);
@@ -345,8 +342,6 @@ public class DayActivity extends ActionBarActivity {
                 linearLayout.setLayoutParams(lp);
                 relativeLayout.addView(linearLayout);
             }
-            //start here
-
             return rootView;
         }
 
