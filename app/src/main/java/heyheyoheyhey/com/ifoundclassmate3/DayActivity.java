@@ -471,6 +471,110 @@ public class DayActivity extends ActionBarActivity {
                 });
             }
 
+            if (function == 1) {
+                // TODO: add steps
+                // step 1 - start time
+                int step = 1;
+                final Button set = (Button) rootView.findViewById(R.id.btnSet);
+                final LinearLayout startTime = (LinearLayout) relativeLayout.findViewById(R.id.startTimeDivider);
+                final LinearLayout endTime = (LinearLayout) relativeLayout.findViewById(R.id.endTimeDivider);
+
+
+                relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            final float y = event.getY();
+                            relativeLayout.removeView(startTime);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            layoutParams.topMargin = (int) y;
+                            startTime.setVisibility(View.VISIBLE);
+                            relativeLayout.addView(startTime, layoutParams);
+                            set.setVisibility(View.VISIBLE);
+                            set.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    TextView text = (TextView) startTime.findViewById(R.id.tvStartTimeDivider);
+                                    text.setTextColor(Color.GREEN);
+                                    final int NUM_HOURS = 18;
+                                    boolean found = false;
+                                    for (int i = 0; i < NUM_HOURS; i++) {
+                                        View view = relativeLayout.getChildAt(i);
+                                        System.out.println(view.getTop() + " " + view.getId());
+                                        if ((int) y < view.getTop()) {
+                                            meetingStartTimeHours = i + 4;
+                                            meetingStartTimeMins = (((int) y - 60) % 120) / 2;
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) {
+                                        meetingStartTimeHours = NUM_HOURS + 4;
+                                        meetingStartTimeMins = (((int) y - 60) % 120) / 2;
+                                    }
+                                    set.setEnabled(false);
+
+                                    // new listener for end time bar...
+                                    relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                                                final float y = event.getY();
+                                                relativeLayout.removeView(endTime);
+                                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                                if ((int) y <= startTime.getTop()) {
+                                                    layoutParams.topMargin = startTime.getTop() + 5;
+                                                } else {
+                                                    layoutParams.topMargin = (int) y;
+                                                }
+                                                endTime.setVisibility(View.VISIBLE);
+                                                relativeLayout.addView(endTime, layoutParams);
+                                                set.setEnabled(true);
+                                                set.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        TextView text = (TextView) endTime.findViewById(R.id.tvEndTimeDivider);
+                                                        text.setTextColor(Color.GREEN);
+                                                        final int NUM_HOURS = 18;
+                                                        boolean found = false;
+                                                        for (int i = 0; i < NUM_HOURS; i++) {
+                                                            View view = relativeLayout.getChildAt(i);
+                                                            System.out.println(view.getTop() + " " + view.getId());
+                                                            if ((int) y < view.getTop()) {
+                                                                meetingEndTimeHours = i + 4;
+                                                                meetingEndTimeMins = (((int) y - 60) % 120) / 2;
+                                                                found = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (!found) {
+                                                            meetingEndTimeHours = NUM_HOURS + 4;
+                                                            meetingEndTimeMins = (((int) y - 60) % 120) / 2;
+                                                        }
+                                                        set.setEnabled(false);
+                                                        Intent intent = new Intent();
+                                                        intent.putExtra("SH", meetingStartTimeHours);
+                                                        intent.putExtra("SM", meetingStartTimeMins);
+                                                        intent.putExtra("EH", meetingEndTimeHours);
+                                                        intent.putExtra("EM", meetingEndTimeMins);
+                                                        intent.putExtra("T", myTime);
+                                                        getActivity().setResult(1, intent);
+                                                        getActivity().finish();
+                                                    }
+                                                });
+                                            }
+                                            return true;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        return true;
+                    }
+                });
+            }
+
             return rootView;
         }
 
