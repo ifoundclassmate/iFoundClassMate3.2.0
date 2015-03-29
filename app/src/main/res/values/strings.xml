@@ -56,6 +56,9 @@
     <string name="pm09">9 pm</string>
     <string name="pm10">10 pm</string>
     <string name="pm11">11 pm</string>
+    <string name="title_activity_add_friends">addFriendsActivity</string>
+    <string name="title_activity_add_friend">AddFriendActivity</string>
+    <string name="title_activity_friend_profile">FriendProfileActivity</string>
     <string name="title_activity_schedule">ScheduleActivity</string>
     <string name="title_section1">Section 1</string>
     <string name="title_activity_day_tab">DayTabActivity</string>

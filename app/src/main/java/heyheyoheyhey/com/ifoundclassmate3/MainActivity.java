@@ -202,6 +202,7 @@ public class MainActivity extends ActionBarActivity {
                 if (savedUser == null) {
                     savedUser = new User(userId, userName, userPassword);
                 }
+                savedUser.SetCalendar(getApplicationContext());
                 startHome(savedUser);
             } else {
                 // not starting from disk... retrieve info from server.
@@ -209,7 +210,7 @@ public class MainActivity extends ActionBarActivity {
                 user = new User(userId, userName, userPassword);
                 loaderProgress += 22;
                 loader.setProgress(loaderProgress);
-                // Step 1: get courses from server
+				user.SetCalendar(getApplicationContext());                // Step 1: get courses from server
                 ServerFunction getCoursesTask = new ServerFunction(ServerUtils.TASK_RETRIEVE_COURSES);
                 getCoursesTask.setUser(user);
                 getCoursesTask.setListener(new ServerFunction.ServerTaskListener() {
